@@ -259,6 +259,13 @@ document.addEventListener('keydown', function (e) {
 const videolink = window.location.href;
 const streamlink = videolink.replace("/watch/", "/dl/");
 
+function pot_player() {
+    const openstreamlink = streamlink;
+    const openPotPlayer = `potplayer://${openstreamlink}`;
+    window.location.href = openPotPlayer;
+}
+
+// Existing functions
 function vlc_player() {
     const openstreamlink = streamlink;
     const openVlc = `vlc://${openstreamlink}`;
