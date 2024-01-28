@@ -265,7 +265,6 @@ function pot_player() {
     window.location.href = openPotPlayer;
 }
 
-// Existing functions
 function vlc_player() {
     const openstreamlink = streamlink;
     const openVlc = `vlc://${openstreamlink}`;
