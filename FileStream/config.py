@@ -46,6 +46,7 @@ class Telegram:
     MULTI_CLIENT = False
     FLOG_CHANNEL = int(env.get("FLOG_CHANNEL", None))   # Logs channel for file logs
     ULOG_CHANNEL = int(env.get("ULOG_CHANNEL", None))   # Logs channel for user logs
+    BUNDLE_FALLBACK_CHAT = int(env.get("BUNDLE_FALLBACK_CHAT", env.get("ULOG_CHANNEL", None)))
     MODE = env.get("MODE", "primary")
     SECONDARY = True if MODE.lower() == "secondary" else False
     AUTH_USERS = list(set(int(x) for x in str(env.get("AUTH_USERS", "")).split()))

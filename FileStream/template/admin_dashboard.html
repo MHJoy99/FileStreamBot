@@ -200,59 +200,41 @@
             backdrop-filter: blur(16px);
         }
 
-        .hero {
-            position: relative;
-            min-height: 300px;
-            overflow: hidden;
-            border-radius: 36px;
-            border: 1px solid var(--line-strong);
-            box-shadow: var(--shadow);
-            background:
-                linear-gradient(90deg, rgba(4, 6, 10, 0.96) 0%, rgba(4, 6, 10, 0.72) 38%, rgba(4, 6, 10, 0.28) 100%),
-                linear-gradient(180deg, rgba(239, 79, 61, 0.16), rgba(4, 6, 10, 0.28)),
-                #0b121b center / cover no-repeat;
-        }
-
-        .hero::after {
-            content: "";
-            position: absolute;
-            inset: auto 0 0;
-            height: 120px;
-            background: linear-gradient(180deg, transparent, rgba(5, 7, 12, 0.84));
-        }
-
-        .hero-inner {
-            position: relative;
-            z-index: 1;
-            display: grid;
-            grid-template-columns: minmax(0, 1.28fr) minmax(250px, 0.72fr);
-            gap: 14px;
-            padding: 22px;
-            min-height: 300px;
-            align-items: stretch;
-        }
-
-        .hero-copy {
-            display: grid;
-            align-content: stretch;
-            gap: 12px;
-            max-width: 820px;
-        }
-
-        .hero h1 {
-            margin: 0;
-            font-family: "Space Grotesk", sans-serif;
-            font-size: clamp(2.1rem, 3.2vw, 3.2rem);
-            line-height: 0.92;
-            letter-spacing: -0.06em;
-            max-width: 10ch;
-        }
-
-        .hero p,
         .muted {
             margin: 0;
             color: var(--muted);
             line-height: 1.7;
+        }
+
+        .home-summary {
+            margin-top: 10px;
+            padding: 18px 20px;
+            border-radius: 28px;
+            display: grid;
+            grid-template-columns: minmax(320px, 0.82fr) minmax(0, 1.18fr);
+            gap: 18px;
+            align-items: start;
+        }
+
+        .home-copy {
+            display: grid;
+            gap: 14px;
+        }
+
+        .home-copy h1 {
+            margin: 0;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(1.7rem, 2.4vw, 2.35rem);
+            line-height: 0.96;
+            letter-spacing: -0.06em;
+            max-width: 11ch;
+        }
+
+        .home-chips,
+        .home-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .hero-meta {
@@ -261,98 +243,142 @@
             flex-wrap: wrap;
         }
 
-        .hero-sidebar {
-            display: grid;
-            gap: 10px;
-            align-self: stretch;
-        }
-
-        .hero-panel {
-            padding: 14px;
-            border-radius: 24px;
-            border: 1px solid var(--line);
-            background: rgba(9, 13, 20, 0.72);
-            backdrop-filter: blur(14px);
-        }
-
-        .hero-summary {
-            display: grid;
-            gap: 16px;
-            align-content: end;
-        }
-
-        .hero-panel h3 {
-            margin: 6px 0 0;
-            font-family: "Space Grotesk", sans-serif;
-            font-size: 1.08rem;
-            letter-spacing: -0.04em;
-        }
-
-        .hero-stats-grid {
+        .home-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px;
+            gap: 10px;
         }
 
-        .hero-stat {
-            padding: 10px 12px;
-            border-radius: 18px;
+        .home-box {
+            padding: 14px 16px;
+            border-radius: 22px;
             border: 1px solid var(--line);
             background: rgba(255, 255, 255, 0.03);
         }
 
-        .hero-stat strong,
-        .hero-stat span {
+        .home-box strong,
+        .home-box span {
             display: block;
         }
 
-        .hero-stat strong {
+        .home-box strong {
             font-family: "Space Grotesk", sans-serif;
-            font-size: 1.1rem;
-            letter-spacing: -0.05em;
+            font-size: 1.16rem;
+            letter-spacing: -0.04em;
         }
 
-        .hero-stat span {
-            margin-top: 4px;
+        .home-box span {
+            margin-top: 6px;
             color: var(--muted);
-            font-size: 0.82rem;
+            font-size: 0.88rem;
+            line-height: 1.5;
         }
 
-        .hero-quick-grid {
+        .home-featured {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            align-content: start;
+        }
+
+        .home-featured-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .home-featured-head strong {
+            display: block;
+            margin-top: 4px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: -0.04em;
+        }
+
+        .home-featured-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .home-mini-card {
+            overflow: hidden;
+            border-radius: 24px;
+            border: 1px solid var(--line);
+            background: rgba(9, 13, 20, 0.92);
+            cursor: pointer;
+            display: grid;
+            grid-template-rows: 180px auto;
+            min-height: 100%;
+        }
+
+        .home-mini-card:hover {
+            border-color: rgba(255, 255, 255, 0.16);
+        }
+
+        .home-mini-art {
+            position: relative;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(6, 9, 14, 0.32)),
+                linear-gradient(135deg, rgba(239, 79, 61, 0.12), rgba(67, 112, 255, 0.12)),
+                #101720 center / cover no-repeat;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .home-mini-art::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(6, 9, 14, 0.06) 0%, rgba(6, 9, 14, 0.10) 50%, rgba(6, 9, 14, 0.46) 100%);
+        }
+
+        .home-mini-top {
+            position: absolute;
+            inset: 10px 10px auto 10px;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
             gap: 8px;
         }
 
-        .hero-quick {
+        .home-mini-copy {
+            padding: 14px;
             display: grid;
-            gap: 4px;
-            padding: 10px 12px;
-            border-radius: 18px;
-            border: 1px solid var(--line);
-            background: rgba(255, 255, 255, 0.03);
+            gap: 10px;
         }
 
-        .hero-quick strong {
-            font-size: 0.86rem;
+        .home-mini-copy h3 {
+            margin: 0;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.02rem;
+            line-height: 1.08;
+            letter-spacing: -0.04em;
         }
 
-        .hero-quick span {
+        .home-mini-copy p {
+            margin: 0;
             color: var(--muted);
-            font-size: 0.8rem;
+            font-size: 0.86rem;
             line-height: 1.45;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        .hero-spotlight {
-            display: grid;
-            gap: 14px;
+        .home-mini-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 10px;
         }
 
-        .hero-poster {
-            width: 100%;
-            aspect-ratio: 1.95 / 2.55;
-            border-radius: 18px;
-            background: linear-gradient(180deg, rgba(239, 79, 61, 0.24), rgba(13, 21, 31, 0.2)), #141c26 center / cover no-repeat;
+        .home-mini-meta small {
+            display: block;
+            color: var(--muted);
+            line-height: 1.45;
         }
 
         .stats-strip {
@@ -741,8 +767,8 @@
 
         .media-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 16px;
         }
 
         .file-browser {
@@ -902,42 +928,43 @@
         }
 
         .media-card {
-            position: relative;
             overflow: hidden;
-            min-height: 440px;
             border-radius: 28px;
             border: 1px solid var(--line);
-            background:
-                linear-gradient(180deg, rgba(5, 7, 12, 0.04) 12%, rgba(5, 7, 12, 0.86) 76%),
-                linear-gradient(180deg, rgba(239, 79, 61, 0.10), rgba(8, 12, 20, 0.08)),
-                #0e151f center / cover no-repeat;
+            background: rgba(9, 13, 20, 0.9);
             box-shadow: var(--shadow);
             cursor: pointer;
-            isolation: isolate;
-        }
-
-        .media-card::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(7, 10, 15, 0.02) 24%, rgba(7, 10, 15, 0.92) 100%);
-            z-index: 0;
-        }
-
-        .media-card > * {
-            position: relative;
-            z-index: 1;
+            display: grid;
+            grid-template-rows: 235px auto;
         }
 
         .media-card:hover {
             border-color: rgba(255, 255, 255, 0.18);
         }
 
+        .media-art {
+            position: relative;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(6, 9, 14, 0.42)),
+                linear-gradient(135deg, rgba(239, 79, 61, 0.18), rgba(67, 112, 255, 0.14)),
+                #111925 center / cover no-repeat;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .media-art::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(6, 9, 14, 0.08) 0%, rgba(6, 9, 14, 0.18) 52%, rgba(6, 9, 14, 0.54) 100%);
+        }
+
         .media-card-top {
+            position: absolute;
+            inset: 12px 12px auto 12px;
             display: flex;
             justify-content: space-between;
             align-items: start;
-            padding: 14px 14px 0;
+            z-index: 1;
         }
 
         .media-badges {
@@ -947,39 +974,34 @@
         }
 
         .media-content {
+            padding: 15px;
             display: grid;
-            align-content: end;
-            min-height: 440px;
-            padding: 18px;
+            gap: 10px;
         }
 
         .media-title {
             margin: 0;
             font-family: "Space Grotesk", sans-serif;
-            font-size: 1.58rem;
-            line-height: 1.02;
+            font-size: 1.08rem;
+            line-height: 1.08;
             letter-spacing: -0.04em;
-            text-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
         }
 
         .media-description {
-            margin-top: 10px;
-            color: rgba(246, 248, 251, 0.88);
-            font-size: 0.92rem;
-            line-height: 1.55;
+            color: var(--muted);
+            font-size: 0.87rem;
+            line-height: 1.5;
             display: -webkit-box;
-            -webkit-line-clamp: 4;
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            text-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
         }
 
         .media-footer {
             display: flex;
             justify-content: space-between;
-            align-items: end;
+            align-items: flex-end;
             gap: 10px;
-            margin-top: 16px;
         }
 
         .media-footer small {
@@ -988,98 +1010,24 @@
             line-height: 1.5;
         }
 
+        .media-footer-copy {
+            min-width: 0;
+        }
+
         .card-actions {
             opacity: 1;
             transform: none;
             transition: opacity 0.18s ease, transform 0.18s ease, background 0.18s ease;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
         }
 
         .media-card:hover .card-actions,
         .media-card:focus-within .card-actions {
             opacity: 1;
             transform: translateY(0);
-        }
-
-        .spotlight-shelf {
-            margin-top: 16px;
-            padding: 16px 18px 18px;
-            border-radius: 26px;
-        }
-
-        .spotlight-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: end;
-            gap: 14px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-
-        .spotlight-track {
-            display: grid;
-            grid-auto-flow: column;
-            grid-auto-columns: minmax(210px, 240px);
-            gap: 14px;
-            overflow-x: auto;
-            padding-bottom: 6px;
-            scroll-snap-type: x proximity;
-        }
-
-        .spotlight-card {
-            position: relative;
-            min-height: 320px;
-            border-radius: 24px;
-            overflow: hidden;
-            border: 1px solid var(--line);
-            background:
-                linear-gradient(180deg, rgba(5, 7, 12, 0.02) 10%, rgba(5, 7, 12, 0.88) 82%),
-                linear-gradient(180deg, rgba(239, 79, 61, 0.08), rgba(8, 12, 20, 0.06)),
-                #0e151f center / cover no-repeat;
-            box-shadow: var(--shadow);
-            padding: 14px;
-            display: grid;
-            align-content: end;
-            scroll-snap-align: start;
-            cursor: pointer;
-        }
-
-        .spotlight-card::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(10, 14, 22, 0.06) 26%, rgba(10, 14, 22, 0.9) 100%);
-        }
-
-        .spotlight-card > * {
-            position: relative;
-            z-index: 1;
-        }
-
-        .spotlight-card h3 {
-            margin: 0;
-            font-family: "Space Grotesk", sans-serif;
-            font-size: 1.38rem;
-            line-height: 1.02;
-            letter-spacing: -0.05em;
-            text-shadow: 0 10px 28px rgba(0, 0, 0, 0.42);
-        }
-
-        .spotlight-card p {
-            margin: 8px 0 0;
-            color: rgba(246, 248, 251, 0.9);
-            line-height: 1.48;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
-        }
-
-        .spotlight-meta {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 14px;
         }
 
         .empty-state,
@@ -1316,8 +1264,8 @@
         @media (max-width: 1320px) {
             .control-grid { grid-template-columns: 1fr; }
             .search-form { grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto auto; }
-            .hero-inner { grid-template-columns: 1fr; }
-            .hero-spotlight { justify-self: start; }
+            .home-summary { grid-template-columns: 1fr; }
+            .home-featured-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .workspace-grid { grid-template-columns: 1fr; }
         }
 
@@ -1335,14 +1283,16 @@
             .browser-row { grid-template-columns: auto minmax(0, 1fr); }
             .browser-meta,
             .browser-actions { grid-column: 1 / -1; justify-content: start; }
+            .home-featured-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
 
         @media (max-width: 700px) {
-            .hero-inner,
+            .home-summary,
             .control-card,
             .modal-content { padding-left: 18px; padding-right: 18px; }
-            .hero { min-height: 460px; }
             .media-grid { grid-template-columns: 1fr 1fr; }
+            .home-grid,
+            .home-featured-grid { grid-template-columns: 1fr; }
             .file-row { grid-template-columns: auto minmax(0, 1fr); }
             .file-actions { grid-column: 1 / -1; justify-content: start; }
             .scan-stats { grid-template-columns: 1fr; }
@@ -1492,9 +1442,22 @@
                 return "Strong Match";
             }
             if (confidence === "medium") {
-                return "Meta Match";
+                return "Matched";
             }
-            return "Filename";
+            return "Raw";
+        }
+
+        function formatCardBadge(group) {
+            if (group?.locked) {
+                return formatLockMode(group.lock_mode, group.locked);
+            }
+            if (group?.confidence === "strong") {
+                return "Strong Match";
+            }
+            if (group?.confidence === "medium") {
+                return "Matched";
+            }
+            return "Raw";
         }
 
         function formatLockMode(lockMode, locked) {
@@ -1525,6 +1488,120 @@
                 return "480p";
             }
             return "Other";
+        }
+
+        function parseSizeBytes(sizeValue) {
+            const value = String(sizeValue || "").trim().toLowerCase();
+            const match = value.match(/^([\d.]+)\s*(kib|kb|mib|mb|gib|gb|tib|tb)$/i);
+            if (!match) {
+                return 0;
+            }
+            const amount = Number(match[1]);
+            const unit = match[2].toLowerCase();
+            const factors = {
+                kib: 1024,
+                kb: 1000,
+                mib: 1024 ** 2,
+                mb: 1000 ** 2,
+                gib: 1024 ** 3,
+                gb: 1000 ** 3,
+                tib: 1024 ** 4,
+                tb: 1000 ** 4,
+            };
+            return amount * (factors[unit] || 1);
+        }
+
+        function compareEpisodeOrder(left, right) {
+            const leftSeason = Number(left.season || 0);
+            const rightSeason = Number(right.season || 0);
+            if (leftSeason !== rightSeason) {
+                return leftSeason - rightSeason;
+            }
+            const leftEpisode = Number(left.episode || 0);
+            const rightEpisode = Number(right.episode || 0);
+            if (leftEpisode !== rightEpisode) {
+                return leftEpisode - rightEpisode;
+            }
+            return String(left.name || "").localeCompare(String(right.name || ""), undefined, { sensitivity: "base" });
+        }
+
+        function sortFilesForModal(files, sortMode) {
+            const next = [...files];
+            if (sortMode === "size_desc") {
+                next.sort((left, right) => parseSizeBytes(right.size) - parseSizeBytes(left.size) || compareEpisodeOrder(left, right));
+                return next;
+            }
+            if (sortMode === "size_asc") {
+                next.sort((left, right) => parseSizeBytes(left.size) - parseSizeBytes(right.size) || compareEpisodeOrder(left, right));
+                return next;
+            }
+            if (sortMode === "name") {
+                next.sort((left, right) => String(left.name || "").localeCompare(String(right.name || ""), undefined, { sensitivity: "base" }));
+                return next;
+            }
+            next.sort(compareEpisodeOrder);
+            return next;
+        }
+
+        function sortBucketsForModal(buckets, sortMode) {
+            const next = [...buckets];
+            if (sortMode === "size_desc") {
+                next.sort((left, right) => {
+                    const leftMax = Math.max(...left.files.map((file) => parseSizeBytes(file.size)), 0);
+                    const rightMax = Math.max(...right.files.map((file) => parseSizeBytes(file.size)), 0);
+                    return rightMax - leftMax || String(left.label || "").localeCompare(String(right.label || ""), undefined, { sensitivity: "base" });
+                });
+                return next;
+            }
+            if (sortMode === "size_asc") {
+                next.sort((left, right) => {
+                    const leftMin = Math.min(...left.files.map((file) => parseSizeBytes(file.size)), Number.MAX_SAFE_INTEGER);
+                    const rightMin = Math.min(...right.files.map((file) => parseSizeBytes(file.size)), Number.MAX_SAFE_INTEGER);
+                    return leftMin - rightMin || String(left.label || "").localeCompare(String(right.label || ""), undefined, { sensitivity: "base" });
+                });
+                return next;
+            }
+            if (sortMode === "name") {
+                next.sort((left, right) => String(left.label || "").localeCompare(String(right.label || ""), undefined, { sensitivity: "base" }));
+                return next;
+            }
+            next.sort((left, right) => compareEpisodeOrder(left.files[0] || {}, right.files[0] || {}));
+            return next;
+        }
+
+        function extractReleaseTags(fileName) {
+            const value = String(fileName || "").toLowerCase();
+            const tags = [];
+
+            if (/bluray|bdrip|bdremux/.test(value)) {
+                tags.push("BluRay");
+            } else if (/web[-_. ]?dl/.test(value)) {
+                tags.push("WEB-DL");
+            } else if (/webrip/.test(value)) {
+                tags.push("WEBRip");
+            } else if (/\bnf\b|netflix/.test(value)) {
+                tags.push("NF");
+            }
+
+            if (/av1/.test(value)) {
+                tags.push("AV1");
+            } else if (/x265|hevc|h265/.test(value)) {
+                tags.push("HEVC");
+            } else if (/x264|h264/.test(value)) {
+                tags.push("x264");
+            }
+
+            if (/atmos/.test(value)) {
+                tags.push("Atmos");
+            } else if (/ddp5[._ ]?1|ddp|dd\+/.test(value)) {
+                tags.push("DDP");
+            } else if (/aac/.test(value)) {
+                tags.push("AAC");
+            } else if (/dts/.test(value)) {
+                tags.push("DTS");
+            }
+
+            return tags.slice(0, 3);
         }
 
         function buildVariantBuckets(files) {
@@ -1573,10 +1650,10 @@
             const [fixMatchResults, setFixMatchResults] = useState([]);
             const [fixMatchLoading, setFixMatchLoading] = useState(false);
             const [activeQualityFilter, setActiveQualityFilter] = useState("all");
+            const [activeVariantSort, setActiveVariantSort] = useState("episode");
             const [adminUsers, setAdminUsers] = useState(initialData.admin_users || []);
             const [newAdminUsername, setNewAdminUsername] = useState("");
             const [newAdminPassword, setNewAdminPassword] = useState("");
-            const [heroIndex, setHeroIndex] = useState(0);
 
             useEffect(() => {
                 setSelection(readSelection());
@@ -1617,12 +1694,27 @@
             const homepageLeadGroups = strongMatchGroups.length
                 ? strongMatchGroups
                 : (metaMatchGroups.length ? metaMatchGroups : displayGroups);
-            const strongMatchShelf = strongMatchGroups.length ? strongMatchGroups : homepageLeadGroups;
+            const homeFeaturedGroups = (() => {
+                const rankMap = { strong: 3, medium: 2, filename: 1 };
+                const candidates = (displayGroups.length ? displayGroups : groups).slice().sort((left, right) => {
+                    const leftRank = rankMap[(left.confidence || "filename").toLowerCase()] || 0;
+                    const rightRank = rankMap[(right.confidence || "filename").toLowerCase()] || 0;
+                    if (leftRank !== rightRank) {
+                        return rightRank - leftRank;
+                    }
+                    if (Number(left.locked) !== Number(right.locked)) {
+                        return Number(right.locked) - Number(left.locked);
+                    }
+                    if ((right.poster_url || right.backdrop_url) !== (left.poster_url || left.backdrop_url)) {
+                        return Number(Boolean(right.poster_url || right.backdrop_url)) - Number(Boolean(left.poster_url || left.backdrop_url));
+                    }
+                    return (right.count || 0) - (left.count || 0);
+                });
+                return candidates.slice(0, 4);
+            })();
             const primaryWallGroups = homepageLeadGroups;
             const secondaryMetaGroups = strongMatchGroups.length ? metaMatchGroups : [];
             const secondaryFilenameGroups = filenameGroups.length ? filenameGroups : rawGroups;
-            const featuredCandidates = isExplorerView ? [] : homepageLeadGroups;
-            const featuredGroup = featuredCandidates.length ? featuredCandidates[heroIndex % featuredCandidates.length] : null;
             const activeGroup = isExplorerView ? null : (groups.find((group) => group.key === activeGroupKey) || null);
             const visibleLinks = initialData.visible_links_text || "";
             const activeSelectedIds = activeGroup
@@ -1663,7 +1755,12 @@
             const activeFilteredFiles = activeGroup
                 ? activeGroup.files.filter((file) => activeQualityFilter === "all" || detectQualityTag(file.name) === activeQualityFilter)
                 : [];
-            const activeBuckets = activeGroup ? buildVariantBuckets(activeFilteredFiles) : [];
+            const activeBuckets = activeGroup
+                ? sortBucketsForModal(buildVariantBuckets(activeFilteredFiles), activeVariantSort).map((bucket) => ({
+                    ...bucket,
+                    files: sortFilesForModal(bucket.files, activeVariantSort),
+                }))
+                : [];
             const activeFilteredIds = activeFilteredFiles.map((file) => file.id);
             const activeFilteredSelectedIds = activeFilteredFiles
                 .filter((file) => selection.includes(file.id))
@@ -1677,17 +1774,8 @@
                 setFixMatchQuery(activeGroup ? activeGroup.display_title : "");
                 setFixMatchTmdbId(activeGroup && activeGroup.tmdb_id ? String(activeGroup.tmdb_id) : "");
                 setActiveQualityFilter("all");
+                setActiveVariantSort("episode");
             }, [activeGroupKey]);
-
-            useEffect(() => {
-                if (!featuredCandidates.length || isExplorerView) {
-                    return undefined;
-                }
-                const timer = window.setInterval(() => {
-                    setHeroIndex((current) => (current + 1) % featuredCandidates.length);
-                }, 5000);
-                return () => window.clearInterval(timer);
-            }, [featuredCandidates.length, isExplorerView]);
 
             function copyTextFallback(value) {
                 const input = document.createElement("textarea");
@@ -1748,6 +1836,35 @@
                 }
                 setSelection((current) => current.filter((item) => !activeFilteredIds.includes(item)));
                 setStatus({ message: "Filtered files removed from your playlist selection.", mode: "success" });
+            }
+
+            function selectPerEpisode(mode) {
+                if (!activeBuckets.length) {
+                    setStatus({ message: "No files matched this filter.", mode: "error" });
+                    return;
+                }
+                const ids = activeBuckets
+                    .map((bucket) => sortFilesForModal(bucket.files, mode === "largest" ? "size_desc" : "size_asc")[0]?.id)
+                    .filter(Boolean);
+                setSelection((current) => Array.from(new Set([...current.filter((item) => !activeFilteredIds.includes(item)), ...ids])));
+                setStatus({
+                    message: `${ids.length} ${mode === "largest" ? "largest" : "smallest"} variants selected, one per episode.`,
+                    mode: "success",
+                });
+            }
+
+            function pickBucketVariant(bucket, mode) {
+                const target = sortFilesForModal(bucket.files, mode === "largest" ? "size_desc" : "size_asc")[0];
+                if (!target) {
+                    return;
+                }
+                setSelection((current) => Array.from(new Set([...current.filter((item) => !bucket.files.some((file) => file.id === item)), target.id])));
+                setStatus({ message: `${bucket.label} set to the ${mode} release.`, mode: "success" });
+            }
+
+            function clearBucketSelection(bucket) {
+                setSelection((current) => current.filter((item) => !bucket.files.some((file) => file.id === item)));
+                setStatus({ message: `${bucket.label} cleared from the current selection.`, mode: "success" });
             }
 
             function toggleVisible() {
@@ -2108,164 +2225,88 @@
                         </div>
                     </header>
 
-                    <section
-                        id="home"
-                        className="hero"
-                        style={featuredGroup && featuredGroup.backdrop_url ? { backgroundImage: `linear-gradient(90deg, rgba(4, 6, 10, 0.96) 0%, rgba(4, 6, 10, 0.72) 38%, rgba(4, 6, 10, 0.28) 100%), linear-gradient(180deg, rgba(239, 79, 61, 0.16), rgba(4, 6, 10, 0.28)), url('${featuredGroup.backdrop_url}')` } : undefined}
-                    >
-                        <div className="hero-inner">
-                            <div className="hero-copy">
-                                <div className="eyebrow">Streaming Control Room</div>
-                                <h1>Strong matches first. Raw files when you need control.</h1>
-                                <p>
-                                    The homepage now favors the cleanest matched titles first. If there are no strong matches in the current view,
-                                    it falls back to the best available matched titles instead of leaving the screen empty.
-                                </p>
-                                <div className="top-actions">
-                                    <a className="button" href="#library">Browse Library</a>
-                                    <button className="ghost" type="button" onClick={() => jumpToSection("scanner")}>Open Scanner</button>
-                                    <button className="ghost" type="button" onClick={() => copyText(visibleLinks, "Visible page links copied.")}>Copy Visible Links</button>
-                                </div>
-                                <div className="hero-meta">
-                                    <span className="chip">{initialData.library_total_files} files</span>
-                                    <span className="chip">
-                                        {isExplorerView ? `${initialData.total_files} files in this view` : `${initialData.total_groups} titles in this view`}
-                                    </span>
-                                    <span className="chip">{initialData.total_size}</span>
-                                    <span className="chip">
-                                        {strongMatchGroups.length
-                                            ? `${strongMatchGroups.length} strong matches on this page`
-                                            : `${metaMatchGroups.length} best available matches on this page`}
-                                    </span>
-                                    {initialData.search_query ? <span className="chip">Query: {initialData.search_query}</span> : null}
-                                </div>
-                                <div className="hero-quick-grid">
-                                    <div className="hero-quick">
-                                        <strong>Homepage priority</strong>
-                                        <span>Strong-match titles lead when they exist. If not, the page falls back to the best available matched cards.</span>
-                                    </div>
-                                    <div className="hero-quick">
-                                        <strong>Best fallback</strong>
-                                        <span>When metadata looks wrong, Explorer View gives you direct file browsing without poster noise.</span>
-                                    </div>
-                                    <div className="hero-quick">
-                                        <strong>Fast playlist flow</strong>
-                                        <span>Select exact files, filter by quality, and build one PotPlayer `.m3u` link from there.</span>
-                                    </div>
-                                    <div className="hero-quick">
-                                        <strong>Cleaner fixes</strong>
-                                        <span>Use Fix Match only when needed. Homepage shelves now stop weak matches from dominating the first screen.</span>
-                                    </div>
-                                </div>
+                    <section id="home" className="home-summary panel">
+                        <div className="home-copy">
+                            <div className="eyebrow">Streaming Control Room</div>
+                            <h1>Open good titles faster, then build the exact playlist you want.</h1>
+                            <p className="muted">
+                                This home screen now prioritizes the best poster-ready titles first. Strong matches still lead, but matched titles fill the shelf when the library would otherwise look empty.
+                            </p>
+                            <div className="home-actions">
+                                <a className="button" href="#library">Browse Library</a>
+                                <button className="ghost" type="button" onClick={() => jumpToSection("scanner")}>Open Scanner</button>
+                                <button className="ghost" type="button" onClick={() => copyText(visibleLinks, "Visible page links copied.")}>Copy Visible Links</button>
                             </div>
-
-                            <div className="hero-sidebar">
-                                {featuredGroup ? (
-                                    <div className="hero-panel hero-spotlight">
-                                        <div className="section-kicker">{strongMatchGroups.length ? "Featured Strong Match" : "Featured Best Available Match"}</div>
-                                        <div
-                                            className="hero-poster"
-                                            style={featuredGroup.poster_url ? { backgroundImage: `url('${featuredGroup.poster_url}')` } : undefined}
-                                        />
-                                        <h3>{featuredGroup.display_title}</h3>
-                                        <p className="muted" style={{ marginTop: 8 }}>
-                                            {featuredGroup.count} files
-                                            {featuredGroup.release_year ? ` · ${featuredGroup.release_year}` : ""}
-                                            {featuredGroup.media_kind ? ` · ${featuredGroup.media_kind.toUpperCase()}` : ""}
-                                        </p>
-                                        <div className="toolbar-actions">
-                                            <span className={`confidence-chip ${featuredGroup.confidence || "filename"}`}>{formatConfidence(featuredGroup.confidence)}</span>
-                                            <button className="button" type="button" onClick={() => setActiveGroupKey(featuredGroup.key)}>Open Title</button>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="hero-panel hero-summary">
-                                        <div className="section-kicker">Featured Match</div>
-                                        <h3>No matched titles in this view yet</h3>
-                                        <p className="muted" style={{ marginTop: 8 }}>
-                                            This view does not have any strong or meta matches yet, so the homepage can only show raw file browsing below.
-                                        </p>
-                                    </div>
-                                )}
-                                <div className="hero-panel hero-summary">
-                                    <div className="section-kicker">Now Playing on This Page</div>
-                                    <h3>Better first click choices</h3>
-                                    <p className="muted" style={{ marginTop: 8 }}>
-                                        This spotlight rotates through the best matched titles on the current page, preferring Strong Match first and falling back only when needed.
-                                    </p>
-                                    {featuredCandidates.length ? (
-                                        <div className="toolbar-actions">
-                                            <button className="ghost" type="button" onClick={() => setHeroIndex((current) => featuredCandidates.length ? (current - 1 + featuredCandidates.length) % featuredCandidates.length : 0)}>Previous</button>
-                                            <button className="ghost" type="button" onClick={() => setHeroIndex((current) => featuredCandidates.length ? (current + 1) % featuredCandidates.length : 0)}>Next</button>
-                                        </div>
-                                    ) : null}
+                            <div className="home-chips">
+                                <span className="chip">{initialData.library_total_files} files</span>
+                                <span className="chip">{isExplorerView ? `${initialData.total_files} files in this view` : `${initialData.total_groups} titles in this view`}</span>
+                                <span className="chip">{initialData.total_size}</span>
+                                <span className="chip">{selection.length} selected</span>
+                                {initialData.search_query ? <span className="chip">Query: {initialData.search_query}</span> : null}
+                            </div>
+                            <div className="home-grid">
+                                <div className="home-box">
+                                    <strong>{strongMatchGroups.length ? `${strongMatchGroups.length} strong matches` : metaMatchGroups.length ? `${metaMatchGroups.length} matched titles` : `${filenameGroups.length} raw groups`}</strong>
+                                    <span>{strongMatchGroups.length ? "Strong matches are prioritized first." : metaMatchGroups.length ? "Matched titles are filling the homepage until stronger ones exist." : "This view needs Explorer mode more than poster mode."}</span>
+                                </div>
+                                <div className="home-box">
+                                    <strong>{isExplorerView ? "Explorer mode" : "Wall mode"}</strong>
+                                    <span>{isExplorerView ? "Best for messy libraries and direct file selection." : "Best when posters and grouping are clean enough to browse by title."}</span>
+                                </div>
+                                <div className="home-box">
+                                    <strong>{initialData.tracked_sources.length} tracked sources</strong>
+                                    <span>Use the scanner to keep groups and channels flowing into the library automatically.</span>
+                                </div>
+                                <div className="home-box">
+                                    <strong>{primaryWallGroups.length || fileRows.length} ready on this page</strong>
+                                    <span>{isExplorerView ? "Raw files are listed directly below." : "Open any title below to filter by quality and build your playlist fast."}</span>
                                 </div>
                             </div>
                         </div>
-                    </section>
-
-                    {!isExplorerView && strongMatchShelf.length ? (
-                        <section className="spotlight-shelf panel">
-                            <div className="spotlight-head">
+                        <div className="home-featured">
+                            <div className="home-featured-head">
                                 <div>
-                                    <div className="section-kicker">{strongMatchGroups.length ? "Strong Match Shelf" : "Best Available Shelf"}</div>
-                                    <h2 style={{ margin: "8px 0 0", fontFamily: '"Space Grotesk", sans-serif', fontSize: "1.8rem" }}>
-                                        {strongMatchGroups.length ? "Start with the clean cards" : "Start with the best matched cards available"}
-                                    </h2>
-                                    <p className="muted" style={{ marginTop: 8 }}>
-                                        {strongMatchGroups.length
-                                            ? "This row highlights the strongest matched titles first so the homepage feels more like a real streaming shelf."
-                                            : "There are no strong matches in this result set, so this row falls back to the cleanest available matched titles instead of going blank."}
-                                    </p>
+                                    <div className="section-kicker">Featured Shelf</div>
+                                    <strong>{strongMatchGroups.length ? "Strong matches first" : metaMatchGroups.length ? "Best matched titles right now" : "Best available titles in this view"}</strong>
                                 </div>
-                                <div className="surface-stats">
-                                    <span className="chip">
-                                        {strongMatchGroups.length ? `${strongMatchGroups.length} strong matches` : `${metaMatchGroups.length} meta matches`}
-                                    </span>
-                                    <span className="chip">{strongMatchShelf.length} poster-ready titles</span>
-                                </div>
+                                <span className="chip">{homeFeaturedGroups.length} ready to open</span>
                             </div>
-                            <div className="spotlight-track">
-                                {strongMatchShelf.slice(0, 18).map((group) => (
-                                    <article
-                                        key={`spotlight-${group.key}`}
-                                        className="spotlight-card"
-                                        style={(group.poster_url || group.backdrop_url) ? { backgroundImage: `linear-gradient(180deg, rgba(5, 7, 12, 0.02) 10%, rgba(5, 7, 12, 0.88) 82%), linear-gradient(180deg, rgba(239, 79, 61, 0.08), rgba(8, 12, 20, 0.06)), url('${group.poster_url || group.backdrop_url}')` } : undefined}
-                                        onClick={() => setActiveGroupKey(group.key)}
-                                    >
-                                        <div className="spotlight-meta">
-                                            {group.release_year ? <span className="chip">{group.release_year}</span> : null}
-                                            <span className={`confidence-chip ${group.confidence || "filename"}`}>{formatConfidence(group.confidence)}</span>
-                                        </div>
-                                        <h3>{group.display_title}</h3>
-                                        {group.overview ? <p>{group.overview}</p> : <p>{group.count} files ready. Open this title to inspect episodes and build a playlist fast.</p>}
-                                        <div className="spotlight-meta">
-                                            <span className="chip">{group.count} files</span>
-                                            <span className="chip">{group.total_size}</span>
-                                            <span className="chip">{group.media_kind.toUpperCase()}</span>
-                                        </div>
-                                    </article>
-                                ))}
-                            </div>
-                        </section>
-                    ) : (
-                        !isExplorerView ? (
-                            <section className="spotlight-shelf panel">
-                                <div className="spotlight-head">
-                                    <div>
-                                        <div className="section-kicker">Best Available Shelf</div>
-                                        <h2 style={{ margin: "8px 0 0", fontFamily: '"Space Grotesk", sans-serif', fontSize: "1.55rem" }}>No matched titles in this result set yet</h2>
-                                        <p className="muted" style={{ marginTop: 8 }}>
-                                            This view does not have strong matches or meta matches yet, so the homepage shelf stays empty until there is at least one matched title.
-                                        </p>
-                                    </div>
-                                    <div className="surface-stats">
-                                        <span className="chip">0 matched titles</span>
-                                    </div>
+                            {homeFeaturedGroups.length ? (
+                                <div className="home-featured-grid">
+                                    {homeFeaturedGroups.map((group) => {
+                                        const selectedCount = group.files.filter((file) => selection.includes(file.id)).length;
+                                        const image = group.poster_url || group.backdrop_url || "";
+                                        return (
+                                            <article key={`home-${group.key}`} className="home-mini-card" onClick={() => setActiveGroupKey(group.key)}>
+                                                <div className="home-mini-art" style={image ? { backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(6, 9, 14, 0.32)), linear-gradient(135deg, rgba(239, 79, 61, 0.12), rgba(67, 112, 255, 0.12)), url('${image}')` } : undefined}>
+                                                    <div className="home-mini-top">
+                                                        <div className="media-badges">
+                                                            {group.release_year ? <span className="chip">{group.release_year}</span> : null}
+                                                            <span className={`confidence-chip ${group.confidence || "filename"}`}>{formatCardBadge(group)}</span>
+                                                        </div>
+                                                        {selectedCount ? <span className="chip">{selectedCount} selected</span> : null}
+                                                    </div>
+                                                </div>
+                                                <div className="home-mini-copy">
+                                                    <h3>{group.display_title}</h3>
+                                                    <p>{group.overview || `${group.count} files grouped here. Open the title to pick the exact quality and version you want.`}</p>
+                                                    <div className="home-mini-meta">
+                                                        <div>
+                                                            <small>{group.count} files · {group.total_size}</small>
+                                                            <small>{group.source_titles.slice(0, 1).join(" · ") || "Library"}</small>
+                                                        </div>
+                                                        <button className="tiny" type="button" onClick={(event) => { event.stopPropagation(); setActiveGroupKey(group.key); }}>Open</button>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        );
+                                    })}
                                 </div>
-                            </section>
-                        ) : null
-                    )}
+                            ) : (
+                                <div className="empty-state">No poster-ready titles are available in this view yet. Switch to Explorer mode for raw file browsing.</div>
+                            )}
+                        </div>
+                    </section>
 
                     <section className="search-surface panel">
                         <div className="surface-top">
@@ -2333,11 +2374,15 @@
                         <div className="section-head">
                             <div className="section-copy">
                                 <div className="section-kicker">Library Wall</div>
-                                <h2>{isExplorerView ? "Explorer mode for ugly real files" : "Strong matches first, weaker matches pushed down"}</h2>
+                                <h2>{isExplorerView ? "Explorer mode for real file browsing" : strongMatchGroups.length ? "Strong matches first" : metaMatchGroups.length ? "Best matched titles" : "Raw title groups"}</h2>
                                 <p className="muted">
                                     {isExplorerView
                                         ? "Browse the raw filtered files directly, select many at once, and stop depending on perfect metadata."
-                                        : "The first poster wall is now strict Strong Match only. Meta matches and filename-only groups live in lower shelves instead of crowding the homepage."}
+                                        : strongMatchGroups.length
+                                            ? "These are the cleanest grouped titles in the current view."
+                                            : metaMatchGroups.length
+                                                ? "These are the best matched titles we have right now. If one looks wrong, open it and use Fix Match."
+                                                : "No trustworthy metadata here yet. Open raw groups or switch to Explorer mode for direct file control."}
                                 </p>
                             </div>
                             <div className="selection-actions">
@@ -2392,27 +2437,27 @@
                                         <article
                                             key={group.key}
                                             className="media-card"
-                                            style={image ? { backgroundImage: `linear-gradient(180deg, rgba(5, 7, 12, 0.08) 18%, rgba(5, 7, 12, 0.94) 78%), linear-gradient(180deg, rgba(239, 79, 61, 0.14), rgba(8, 12, 20, 0.18)), url('${image}')` } : undefined}
                                             onClick={() => setActiveGroupKey(group.key)}
                                         >
-                                            <div className="media-card-top">
-                                                <div className="media-badges">
-                                                    {group.release_year ? <span className="chip">{group.release_year}</span> : null}
-                                                    <span className="chip">{group.media_kind.toUpperCase()}</span>
-                                                    {group.locked ? <span className="chip">{formatLockMode(group.lock_mode, group.locked)}</span> : null}
+                                            <div className="media-art" style={image ? { backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(6, 9, 14, 0.42)), linear-gradient(135deg, rgba(239, 79, 61, 0.18), rgba(67, 112, 255, 0.14)), url('${image}')` } : undefined}>
+                                                <div className="media-card-top">
+                                                    <div className="media-badges">
+                                                        {group.release_year ? <span className="chip">{group.release_year}</span> : null}
+                                                        <span className="chip">{group.media_kind.toUpperCase()}</span>
+                                                    </div>
+                                                    {selectedCount ? <span className="chip">{selectedCount} selected</span> : null}
                                                 </div>
-                                                {selectedCount ? <span className="chip">{selectedCount} selected</span> : null}
                                             </div>
                                             <div className="media-content">
                                                 <h3 className="media-title">{group.display_title}</h3>
-                                                {group.overview ? <p className="media-description">{group.overview}</p> : null}
+                                                <p className="media-description">{group.overview || `${group.count} files grouped here. Open the title to inspect episodes, quality variants, and direct links.`}</p>
                                                 <div className="media-footer">
-                                                    <div>
+                                                    <div className="media-footer-copy">
                                                         <small>{group.count} files · {group.total_size}</small>
                                                         <small>{seasons ? `${seasons} seasons` : "Single title"} · {group.source_titles.slice(0, 2).join(" · ")}</small>
                                                     </div>
-                                                    <span className={`confidence-chip ${group.confidence || "filename"}`}>{formatConfidence(group.confidence)}</span>
                                                     <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                                                        <span className={`confidence-chip ${group.confidence || "filename"}`}>{formatCardBadge(group)}</span>
                                                         <button className="tiny" type="button" onClick={() => setActiveGroupKey(group.key)}>Open</button>
                                                         <button className="tiny" type="button" onClick={() => selectGroup(group.files.map((file) => file.id))}>Select</button>
                                                     </div>
@@ -2423,17 +2468,17 @@
                                 })}
                             </div>
                         ) : (
-                            <div className="empty-state">No strong matches are visible in this result set yet. Use Explorer View for raw files, or open the lower shelves for weaker matches.</div>
+                            <div className="empty-state">No grouped titles are visible here yet. Try another search, another source, or switch to Explorer mode for direct files.</div>
                         )}
 
                         {!isExplorerView && secondaryMetaGroups.length ? (
                             <details className="raw-shelf panel">
                                 <summary>
                                     <div>
-                                        <div className="section-kicker">Meta Match Shelf</div>
-                                        <strong>{secondaryMetaGroups.length} weaker TMDb matches are parked here</strong>
+                                        <div className="section-kicker">Matched Shelf</div>
+                                        <strong>{secondaryMetaGroups.length} lower-confidence matched titles are parked here</strong>
                                     </div>
-                                    <span className="chip">Open meta matches</span>
+                                    <span className="chip">Open matched titles</span>
                                 </summary>
                                 <div className="raw-shelf-body">
                                     <div className="media-grid">
@@ -2444,26 +2489,27 @@
                                                 <article
                                                     key={`meta-${group.key}`}
                                                     className="media-card"
-                                                    style={image ? { backgroundImage: `linear-gradient(180deg, rgba(5, 7, 12, 0.04) 12%, rgba(5, 7, 12, 0.86) 76%), linear-gradient(180deg, rgba(239, 79, 61, 0.10), rgba(8, 12, 20, 0.08)), url('${image}')` } : undefined}
                                                     onClick={() => setActiveGroupKey(group.key)}
                                                 >
-                                                    <div className="media-card-top">
-                                                        <div className="media-badges">
-                                                            {group.release_year ? <span className="chip">{group.release_year}</span> : null}
-                                                            <span className="chip">{group.media_kind.toUpperCase()}</span>
+                                                    <div className="media-art" style={image ? { backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(6, 9, 14, 0.42)), linear-gradient(135deg, rgba(239, 79, 61, 0.18), rgba(67, 112, 255, 0.14)), url('${image}')` } : undefined}>
+                                                        <div className="media-card-top">
+                                                            <div className="media-badges">
+                                                                {group.release_year ? <span className="chip">{group.release_year}</span> : null}
+                                                                <span className="chip">{group.media_kind.toUpperCase()}</span>
+                                                            </div>
+                                                            {selectedCount ? <span className="chip">{selectedCount} selected</span> : null}
                                                         </div>
-                                                        {selectedCount ? <span className="chip">{selectedCount} selected</span> : null}
                                                     </div>
                                                     <div className="media-content">
                                                         <h3 className="media-title">{group.display_title}</h3>
-                                                        {group.overview ? <p className="media-description">{group.overview}</p> : null}
+                                                        <p className="media-description">{group.overview || `${group.count} files grouped here. Use Fix Match if the metadata looks off.`}</p>
                                                         <div className="media-footer">
-                                                            <div>
+                                                            <div className="media-footer-copy">
                                                                 <small>{group.count} files · {group.total_size}</small>
                                                                 <small>{group.source_titles.slice(0, 2).join(" · ")}</small>
                                                             </div>
-                                                            <span className={`confidence-chip ${group.confidence || "filename"}`}>{formatConfidence(group.confidence)}</span>
                                                             <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                                                                <span className={`confidence-chip ${group.confidence || "filename"}`}>{formatCardBadge(group)}</span>
                                                                 <button className="tiny" type="button" onClick={() => setActiveGroupKey(group.key)}>Open</button>
                                                             </div>
                                                         </div>
@@ -2495,22 +2541,25 @@
                                                     className="media-card"
                                                     onClick={() => setActiveGroupKey(group.key)}
                                                 >
-                                                    <div className="media-card-top">
-                                                        <div className="media-badges">
-                                                            <span className="chip">{group.media_kind.toUpperCase()}</span>
-                                                            {group.locked ? <span className="chip">{formatLockMode(group.lock_mode, group.locked)}</span> : null}
+                                                    <div className="media-art">
+                                                        <div className="media-card-top">
+                                                            <div className="media-badges">
+                                                                <span className="chip">{group.media_kind.toUpperCase()}</span>
+                                                                {group.locked ? <span className="chip">{formatLockMode(group.lock_mode, group.locked)}</span> : null}
+                                                            </div>
+                                                            {selectedCount ? <span className="chip">{selectedCount} selected</span> : null}
                                                         </div>
-                                                        {selectedCount ? <span className="chip">{selectedCount} selected</span> : null}
                                                     </div>
                                                     <div className="media-content">
                                                         <h3 className="media-title">{group.display_title}</h3>
+                                                        <p className="media-description">{group.count} files grouped by filename. Use Explorer mode if you want the direct file list instead.</p>
                                                         <div className="media-footer">
-                                                            <div>
+                                                            <div className="media-footer-copy">
                                                                 <small>{group.count} files · {group.total_size}</small>
                                                                 <small>{group.source_titles.slice(0, 2).join(" · ")}</small>
                                                             </div>
-                                                            <span className={`confidence-chip ${group.confidence || "filename"}`}>{formatConfidence(group.confidence)}</span>
                                                             <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                                                                <span className={`confidence-chip ${group.confidence || "filename"}`}>{formatCardBadge(group)}</span>
                                                                 <button className="tiny" type="button" onClick={() => setActiveGroupKey(group.key)}>Open</button>
                                                             </div>
                                                         </div>
@@ -2911,10 +2960,11 @@
                                                     onClick={() => setActiveQualityFilter("all")}
                                                 >
                                                     All Files
-                                                    <span className="chip">{activeGroup.files.length}</span>
+                                                    <span className="chip">{buildVariantBuckets(activeGroup.files).length} eps · {activeGroup.files.length} files</span>
                                                 </button>
                                                 {activeQualityOptions.map((quality) => {
-                                                    const count = activeGroup.files.filter((file) => detectQualityTag(file.name) === quality).length;
+                                                    const qualityFiles = activeGroup.files.filter((file) => detectQualityTag(file.name) === quality);
+                                                    const episodeCount = buildVariantBuckets(qualityFiles).length;
                                                     return (
                                                         <button
                                                             key={quality}
@@ -2923,14 +2973,23 @@
                                                             onClick={() => setActiveQualityFilter(quality)}
                                                         >
                                                             {quality}
-                                                            <span className="chip">{count}</span>
+                                                            <span className="chip">{episodeCount} eps · {qualityFiles.length} files</span>
                                                         </button>
                                                     );
                                                 })}
                                             </div>
                                             <div className="toolbar-actions">
                                                 <span className="chip">{activeFilteredFiles.length} filtered files</span>
+                                                <span className="chip">{activeBuckets.length} episode groups</span>
                                                 <span className="chip">{activeFilteredSelectionCount} selected from filter</span>
+                                                <select value={activeVariantSort} onChange={(event) => setActiveVariantSort(event.target.value)} style={{ width: "auto", minWidth: 180 }}>
+                                                    <option value="episode">Episode Order</option>
+                                                    <option value="size_desc">Largest First</option>
+                                                    <option value="size_asc">Smallest First</option>
+                                                    <option value="name">Filename A-Z</option>
+                                                </select>
+                                                <button className="ghost" type="button" onClick={() => selectPerEpisode("largest")}>Pick Largest Per Episode</button>
+                                                <button className="ghost" type="button" onClick={() => selectPerEpisode("smallest")}>Pick Smallest Per Episode</button>
                                                 {activeFilteredSelectionCount ? (
                                                     <button className="button" type="button" onClick={() => createPlaylistForIds(activeFilteredSelectedIds, `${activeGroup.display_title} ${activeQualityFilter === "all" ? "Selected Files" : `${activeQualityFilter} Selected`}`)}>
                                                         M3U From Selected Filter ({activeFilteredSelectionCount})
@@ -2970,6 +3029,11 @@
                                                         <p className="muted" style={{ marginTop: 8 }}>
                                                             {bucket.label} has {bucket.files.length} variants. Pick the exact release you want in the playlist.
                                                         </p>
+                                                        <div className="toolbar-actions" style={{ marginTop: 10 }}>
+                                                            <button className="ghost" type="button" onClick={() => pickBucketVariant(bucket, "largest")}>Pick Largest</button>
+                                                            <button className="ghost" type="button" onClick={() => pickBucketVariant(bucket, "smallest")}>Pick Smallest</button>
+                                                            <button className="ghost" type="button" onClick={() => clearBucketSelection(bucket)}>Clear Episode</button>
+                                                        </div>
                                                     </div>
                                                 ) : null}
                                                 {bucket.files.map((file) => (
@@ -2980,6 +3044,7 @@
                                                             <span>{file.name}</span>
                                                         </div>
                                                         <div className="file-actions">
+                                                            {extractReleaseTags(file.name).map((tag) => <span className="chip" key={`${file.id}-${tag}`}>{tag}</span>)}
                                                             <span className="chip">{detectQualityTag(file.name)}</span>
                                                             <span className="chip">{file.size}</span>
                                                             <a className="tiny" href={file.download_url} target="_blank" rel="noopener">Direct Link</a>

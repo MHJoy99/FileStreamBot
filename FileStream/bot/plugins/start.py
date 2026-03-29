@@ -34,7 +34,7 @@ async def _send_bundle_files(bot: Client, message: Message, bundle: dict):
         return
 
     primary_chat_id = message.chat.id
-    fallback_chat_id = Telegram.ULOG_CHANNEL or Telegram.FLOG_CHANNEL
+    fallback_chat_id = Telegram.BUNDLE_FALLBACK_CHAT or Telegram.ULOG_CHANNEL or Telegram.FLOG_CHANNEL
     saved_messages_header_sent = False
     progress = await message.reply_text(
         f"**Sending {len(file_docs)} selected files in Telegram...**\n\n`{bundle.get('title', 'Telegram bundle')}`",
@@ -91,32 +91,32 @@ async def _send_bundle_files(bot: Client, message: Message, bundle: dict):
         except Exception as error:
             sent_via_route = False
 
-            if source_chat_id and source_message_id and LibraryScannerClient:
+            if not sent_via_route and fallback_chat_id and source_chat_id and source_message_id and LibraryScannerClient:
                 try:
                     if not saved_messages_header_sent:
                         await LibraryScannerClient.send_message(
-                            "me",
+                            fallback_chat_id,
                             f"Telegram website bundle\n{bundle.get('title', 'Telegram bundle')}\nSelected files are being copied here because Telegram won't let the bot resend some scanned files directly.",
                         )
                         saved_messages_header_sent = True
                     copied = await LibraryScannerClient.copy_message(
-                            "me",
+                            fallback_chat_id,
                             from_chat_id=source_chat_id,
                             message_id=source_message_id,
                         )
                     if not copied:
-                        raise RuntimeError("Scanner copy_message to Saved Messages returned no message")
+                        raise RuntimeError("Scanner copy_message to fallback chat returned no message")
                     sent_count += 1
-                    saved_messages_count += 1
+                    fallback_count += 1
                     sent_via_route = True
                     logging.warning(
-                        "Delivered bundle file %s to Saved Messages after bot path failed: %s",
-                        file_doc.get("_id"), error
+                        "Delivered bundle file %s to fallback chat %s via scanner after bot path failed: %s",
+                        file_doc.get("_id"), fallback_chat_id, error
                     )
-                except Exception as saved_error:
+                except Exception as fallback_copy_error:
                     logging.error(
-                        "Could not deliver bundle file %s via bot path (%s) or Saved Messages (%s)",
-                        file_doc.get("_id"), error, saved_error
+                        "Could not deliver bundle file %s via bot path (%s) or scanner fallback chat (%s)",
+                        file_doc.get("_id"), error, fallback_copy_error
                     )
 
             if not sent_via_route and fallback_chat_id and fallback_chat_id != primary_chat_id:
@@ -158,7 +158,6 @@ async def _send_bundle_files(bot: Client, message: Message, bundle: dict):
         await progress.edit_text(
             f"**Telegram bundle finished**\n\n`{bundle.get('title', 'Telegram bundle')}`\n`{sent_count}/{len(file_docs)} files sent`"
             + (f"\n`{dm_count}` sent in this bot chat" if dm_count else "")
-            + (f"\n`{saved_messages_count}` sent to your Saved Messages" if saved_messages_count else "")
             + (f"\n`{fallback_count}` sent to fallback chat `{fallback_chat_id}`" if fallback_count else "")
             + (f"\n`{failed_count}` failed" if failed_count else "")
         )
