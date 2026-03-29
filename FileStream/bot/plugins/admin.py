@@ -8,15 +8,74 @@ import datetime
 
 from FileStream.utils.broadcast_helper import send_msg
 from FileStream.utils.database import Database
+from FileStream.utils.library_scan import get_scan_status, start_library_scan
 from FileStream.bot import FileStream
 from FileStream.server.exceptions import FIleNotFound
 from FileStream.config import Telegram, Server
 from pyrogram import filters, Client
-from pyrogram.types import Message
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from pyrogram.enums.parse_mode import ParseMode
 
 db = Database(Telegram.DATABASE_URL, Telegram.SESSION_NAME)
 broadcast_ids = {}
+
+
+@FileStream.on_message(filters.command(["admin", "panel", "dashboard"]) & filters.private & filters.user(Telegram.OWNER_ID))
+async def admin_panel(_: Client, m: Message):
+    await m.reply_text(
+        text=(
+            "**Web dashboard is ready.**\n\n"
+            f"Open: `{Server.URL}admin/login`\n"
+            "Log in there to select files, build playlist links, and export PotPlayer/VLC playlists."
+        ),
+        parse_mode=ParseMode.MARKDOWN,
+        quote=True,
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton("Open Dashboard", url=f"{Server.URL}admin/login")]]
+        ),
+    )
+
+
+@FileStream.on_message(filters.command("scanchat") & filters.private & filters.user(Telegram.OWNER_ID))
+async def scan_chat_command(_: Client, m: Message):
+    parts = m.text.split(maxsplit=1)
+    if len(parts) < 2:
+        await m.reply_text("Usage: `/scanchat -1001234567890`", parse_mode=ParseMode.MARKDOWN, quote=True)
+        return
+
+    chat_id = parts[1].strip()
+    try:
+        await start_library_scan(chat_id)
+        await m.reply_text(
+            f"Started video-library scan for `{chat_id}`.\nUse `/scanstatus` or the web dashboard to track progress.",
+            parse_mode=ParseMode.MARKDOWN,
+            quote=True,
+        )
+    except RuntimeError as error:
+        await m.reply_text(str(error), quote=True)
+    except Exception as error:
+        await m.reply_text(f"Scan failed to start: `{error}`", parse_mode=ParseMode.MARKDOWN, quote=True)
+
+
+@FileStream.on_message(filters.command("scanstatus") & filters.private & filters.user(Telegram.OWNER_ID))
+async def scan_status_command(_: Client, m: Message):
+    status = get_scan_status()
+    await m.reply_text(
+        text=(
+            f"**Running:** `{status['running']}`\n"
+            f"**Chat:** `{status['chat_id']}`\n"
+            f"**Title:** `{status['chat_title']}`\n"
+            f"**Scanned Messages:** `{status['scanned_messages']}`\n"
+            f"**Matched Videos:** `{status['matched_videos']}`\n"
+            f"**Imported Files:** `{status['imported_files']}`\n"
+            f"**Duplicates:** `{status['duplicate_files']}`\n"
+            f"**Skipped:** `{status['skipped_messages']}`\n"
+            f"**Last File:** `{status['last_file_name']}`\n"
+            f"**Error:** `{status['error'] or '-'}'"
+        ),
+        parse_mode=ParseMode.MARKDOWN,
+        quote=True,
+    )
 
 
 @FileStream.on_message(filters.command("status") & filters.private & filters.user(Telegram.OWNER_ID))
@@ -155,6 +214,4 @@ async def sts(c: Client, m: Message):
         text=f"**Fɪʟᴇ Dᴇʟᴇᴛᴇᴅ Sᴜᴄᴄᴇssғᴜʟʟʏ !** ",
         quote=True
     )
-
-
 

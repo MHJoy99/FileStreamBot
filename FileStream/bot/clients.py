@@ -3,10 +3,14 @@ import logging
 from os import environ
 from ..config import Telegram
 from pyrogram import Client
-from . import multi_clients, work_loads, FileStream
+from . import multi_clients, work_loads, FileStream, LibraryScannerClient
 
 
 async def initialize_clients():
+    if LibraryScannerClient:
+        multi_clients[1] = LibraryScannerClient
+        work_loads[1] = 0
+
     all_tokens = dict(
         (c + 1, t)
         for c, (_, t) in enumerate(
@@ -18,7 +22,11 @@ async def initialize_clients():
     if not all_tokens:
         multi_clients[0] = FileStream
         work_loads[0] = 0
-        print("No additional clients found, using default client")
+        if LibraryScannerClient:
+            Telegram.MULTI_CLIENT = True
+            print("Library scan client enabled alongside default client")
+        else:
+            print("No additional clients found, using default client")
         return
     
     async def start_client(client_id, token):
@@ -51,7 +59,7 @@ async def initialize_clients():
             logging.error(f"Failed starting Client - {client_id} Error:", exc_info=True)
     
     clients = await asyncio.gather(*[start_client(i, token) for i, token in all_tokens.items()])
-    multi_clients.update(dict(clients))
+    multi_clients.update(dict(client for client in clients if client is not None))
     if len(multi_clients) != 1:
         Telegram.MULTI_CLIENT = True
         print("Multi-Client Mode Enabled")

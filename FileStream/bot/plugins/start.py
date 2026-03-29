@@ -1,11 +1,13 @@
 import logging
 import math
+import contextlib
 from FileStream import __version__
-from FileStream.bot import FileStream
+from FileStream.bot import FileStream, LibraryScannerClient
 from FileStream.server.exceptions import FIleNotFound
 from FileStream.utils.bot_utils import gen_linkx, verify_user
-from FileStream.config import Telegram
+from FileStream.config import Telegram, Server
 from FileStream.utils.database import Database
+from FileStream.utils.playlist_utils import build_playlist_buffer
 from FileStream.utils.translation import LANG, BUTTON
 from pyrogram import filters, Client
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
@@ -14,13 +16,166 @@ import asyncio
 
 db = Database(Telegram.DATABASE_URL, Telegram.SESSION_NAME)
 
+
+def _pick_bot_usable_file_id(file_doc: dict, bot_id: int) -> str:
+    available_file_ids = file_doc.get("file_ids") or {}
+    bot_file_id = available_file_ids.get(str(bot_id))
+    if bot_file_id:
+        return bot_file_id
+    if not file_doc.get("source_chat_id"):
+        return file_doc.get("file_id") or ""
+    return ""
+
+
+async def _send_bundle_files(bot: Client, message: Message, bundle: dict):
+    file_docs = await db.get_files_by_ids(bundle["user_id"], bundle.get("file_ids", []))
+    if not file_docs:
+        await message.reply_text("**No valid files were found inside this Telegram bundle.**")
+        return
+
+    primary_chat_id = message.chat.id
+    fallback_chat_id = Telegram.ULOG_CHANNEL or Telegram.FLOG_CHANNEL
+    saved_messages_header_sent = False
+    progress = await message.reply_text(
+        f"**Sending {len(file_docs)} selected files in Telegram...**\n\n`{bundle.get('title', 'Telegram bundle')}`",
+        quote=True,
+    )
+    sent_count = 0
+    dm_count = 0
+    fallback_count = 0
+    saved_messages_count = 0
+    failed_count = 0
+
+    for index, file_doc in enumerate(file_docs, start=1):
+        file_id = _pick_bot_usable_file_id(file_doc, bot.id)
+        source_chat_id = file_doc.get("source_chat_id")
+        source_message_id = file_doc.get("source_message_id")
+        file_name = file_doc.get("file_name", f"File {index}")
+
+        try:
+            if file_id:
+                sent_message = await bot.send_cached_media(
+                    chat_id=primary_chat_id,
+                    file_id=file_id,
+                    caption=f"**{file_name}**",
+                )
+                if not sent_message:
+                    raise RuntimeError("Bot send_cached_media returned no message")
+                sent_count += 1
+                dm_count += 1
+                logging.info("Delivered bundle file %s to bot DM %s via bot file_id", file_doc.get("_id"), primary_chat_id)
+            elif source_chat_id and source_message_id:
+                sent_message = await bot.copy_message(
+                    chat_id=primary_chat_id,
+                    from_chat_id=source_chat_id,
+                    message_id=source_message_id,
+                )
+                if not sent_message:
+                    raise RuntimeError("Bot copy_message returned no message")
+                sent_count += 1
+                dm_count += 1
+                logging.info("Delivered bundle file %s to bot DM %s via bot source copy", file_doc.get("_id"), primary_chat_id)
+            else:
+                raise RuntimeError("No bot-safe file path exists")
+
+            if index == 1 or index == len(file_docs) or index % 10 == 0:
+                with contextlib.suppress(Exception):
+                    await progress.edit_text(
+                        f"**Sending Telegram bundle...**\n\n`{bundle.get('title', 'Telegram bundle')}`\n"
+                        f"`{sent_count}/{len(file_docs)} delivered`\n"
+                        f"`{dm_count}` in bot chat"
+                        + (f"\n`{saved_messages_count}` in Saved Messages" if saved_messages_count else "")
+                        + (f"\n`{fallback_count}` in fallback chat" if fallback_count else "")
+                    )
+            await asyncio.sleep(0.2)
+        except Exception as error:
+            sent_via_route = False
+
+            if source_chat_id and source_message_id and LibraryScannerClient:
+                try:
+                    if not saved_messages_header_sent:
+                        await LibraryScannerClient.send_message(
+                            "me",
+                            f"Telegram website bundle\n{bundle.get('title', 'Telegram bundle')}\nSelected files are being copied here because Telegram won't let the bot resend some scanned files directly.",
+                        )
+                        saved_messages_header_sent = True
+                    copied = await LibraryScannerClient.copy_message(
+                            "me",
+                            from_chat_id=source_chat_id,
+                            message_id=source_message_id,
+                        )
+                    if not copied:
+                        raise RuntimeError("Scanner copy_message to Saved Messages returned no message")
+                    sent_count += 1
+                    saved_messages_count += 1
+                    sent_via_route = True
+                    logging.warning(
+                        "Delivered bundle file %s to Saved Messages after bot path failed: %s",
+                        file_doc.get("_id"), error
+                    )
+                except Exception as saved_error:
+                    logging.error(
+                        "Could not deliver bundle file %s via bot path (%s) or Saved Messages (%s)",
+                        file_doc.get("_id"), error, saved_error
+                    )
+
+            if not sent_via_route and fallback_chat_id and fallback_chat_id != primary_chat_id:
+                try:
+                    if file_id:
+                        fallback_message = await bot.send_cached_media(
+                            chat_id=fallback_chat_id,
+                            file_id=file_id,
+                            caption=f"**{file_name}**",
+                        )
+                    elif source_chat_id and source_message_id:
+                        fallback_message = await bot.copy_message(
+                            chat_id=fallback_chat_id,
+                            from_chat_id=source_chat_id,
+                            message_id=source_message_id,
+                        )
+                    else:
+                        raise RuntimeError("No fallback path exists")
+                    if not fallback_message:
+                        raise RuntimeError("Fallback send returned no message")
+                    sent_count += 1
+                    fallback_count += 1
+                    sent_via_route = True
+                    logging.warning(
+                        "Delivered bundle file %s to fallback chat %s after primary failure: %s",
+                        file_doc.get("_id"), fallback_chat_id, error
+                    )
+                except Exception as fallback_error:
+                    logging.error(
+                        "Could not send bundle file %s via fallback chat after bot path failure (%s): %s",
+                        file_doc.get("_id"), error, fallback_error
+                    )
+
+            if not sent_via_route:
+                failed_count += 1
+                logging.error("Could not send bundle file %s: %s", file_doc.get("_id"), error)
+
+    with contextlib.suppress(Exception):
+        await progress.edit_text(
+            f"**Telegram bundle finished**\n\n`{bundle.get('title', 'Telegram bundle')}`\n`{sent_count}/{len(file_docs)} files sent`"
+            + (f"\n`{dm_count}` sent in this bot chat" if dm_count else "")
+            + (f"\n`{saved_messages_count}` sent to your Saved Messages" if saved_messages_count else "")
+            + (f"\n`{fallback_count}` sent to fallback chat `{fallback_chat_id}`" if fallback_count else "")
+            + (f"\n`{failed_count}` failed" if failed_count else "")
+        )
+
 @FileStream.on_message(filters.command('start') & filters.private)
 async def start(bot: Client, message: Message):
     if not await verify_user(bot, message):
         return
-    usr_cmd = message.text.split("_")[-1]
+    start_arg = ""
+    if getattr(message, "command", None) and len(message.command) > 1:
+        start_arg = str(message.command[1]).strip()
+    elif message.text:
+        parts = message.text.split(maxsplit=1)
+        if len(parts) > 1:
+            start_arg = parts[1].strip()
 
-    if usr_cmd == "/start":
+    if not start_arg:
         if Telegram.START_PIC:
             await message.reply_photo(
                 photo=Telegram.START_PIC,
@@ -36,11 +191,12 @@ async def start(bot: Client, message: Message):
                 reply_markup=BUTTON.START_BUTTONS
             )
     else:
-        if "stream_" in message.text:
+        if start_arg.startswith("stream_"):
             try:
-                file_check = await db.get_file(usr_cmd)
+                db_id_arg = start_arg.removeprefix("stream_")
+                file_check = await db.get_file(db_id_arg)
                 file_id = str(file_check['_id'])
-                if file_id == usr_cmd:
+                if file_id == db_id_arg:
                     reply_markup, stream_text = await gen_linkx(m=message, _id=file_id,
                                                                 name=[FileStream.username, FileStream.fname])
                     await message.reply_text(
@@ -57,13 +213,14 @@ async def start(bot: Client, message: Message):
                 await message.reply_text("Something Went Wrong")
                 logging.error(e)
 
-        elif "file_" in message.text:
+        elif start_arg.startswith("file_"):
             try:
-                file_check = await db.get_file(usr_cmd)
+                db_id_arg = start_arg.removeprefix("file_")
+                file_check = await db.get_file(db_id_arg)
                 db_id = str(file_check['_id'])
-                file_id = file_check['file_id']
+                file_id = _pick_bot_usable_file_id(file_check, bot.id)
                 file_name = file_check['file_name']
-                if db_id == usr_cmd:
+                if db_id == db_id_arg:
                     filex = await message.reply_cached_media(file_id=file_id, caption=f'**{file_name}**')
                     await asyncio.sleep(3600)
                     try:
@@ -74,6 +231,18 @@ async def start(bot: Client, message: Message):
 
             except FIleNotFound as e:
                 await message.reply_text("**File Not Found**")
+            except Exception as e:
+                await message.reply_text("Something Went Wrong")
+                logging.error(e)
+
+        elif start_arg.startswith("tgpack_"):
+            try:
+                bundle_token = start_arg.removeprefix("tgpack_")
+                bundle = await db.get_tg_bundle(bundle_token)
+                if not bundle:
+                    await message.reply_text("**Telegram bundle not found.**")
+                    return
+                await _send_bundle_files(bot, message, bundle)
             except Exception as e:
                 await message.reply_text("Something Went Wrong")
                 logging.error(e)
@@ -141,9 +310,31 @@ async def my_files(bot: Client, message: Message):
         file_list.append(
             [InlineKeyboardButton("ᴇᴍᴘᴛʏ", callback_data="N/A")],
         )
+    file_list.append([InlineKeyboardButton("ᴘʟᴀʏʟɪsᴛ ᴍ𝟹ᴜ", callback_data="sendplaylist")])
     file_list.append([InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close")])
     await message.reply_photo(photo=Telegram.FILE_PIC,
                               caption="Total files: {}".format(total_files),
                               reply_markup=InlineKeyboardMarkup(file_list))
 
 
+@FileStream.on_message(filters.command(['playlist', 'm3u']) & filters.private)
+async def send_playlist(bot: Client, message: Message):
+    if not await verify_user(bot, message):
+        return
+
+    playlist_buffer = await build_m3u_playlist(message.from_user.id)
+    if playlist_buffer is None:
+        await message.reply_text("**No files found to build a playlist.**")
+        return
+
+    await message.reply_document(
+        document=playlist_buffer,
+        caption=LANG.PLAYLIST_TEXT,
+        quote=True
+    )
+
+
+async def build_m3u_playlist(user_id: int):
+    user_files = await db.get_all_files_by_user(user_id)
+    file_docs = [file_info async for file_info in user_files]
+    return build_playlist_buffer(file_docs, f"filestream_playlist_{user_id}")

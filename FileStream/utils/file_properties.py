@@ -46,6 +46,44 @@ async def get_file_ids(client: Client | bool, db_id: str, multi_clients, message
     return file_id
 
 
+async def refresh_client_file_id(client: Client, db_id: str, multi_clients, message) -> Optional[FileId]:
+    file_info = await db.get_file(db_id)
+    file_id_info = file_info.setdefault("file_ids", {})
+
+    source_chat_id = file_info.get("source_chat_id")
+    source_message_id = file_info.get("source_message_id")
+    if source_chat_id is not None and source_message_id is not None:
+        try:
+            source_message = await client.get_messages(int(source_chat_id), int(source_message_id))
+            media = get_media_from_message(source_message)
+            refreshed_file_id = getattr(media, "file_id", "")
+            if refreshed_file_id:
+                file_id_info[str(client.id)] = refreshed_file_id
+                await db.update_file_ids(db_id, file_id_info)
+        except Exception as error:
+            logging.warning("Could not refresh file reference from source for %s on client %s: %s", db_id, getattr(client, "id", "unknown"), error)
+
+    if str(client.id) not in file_id_info and getattr(client, "id", None) == getattr(FileStream, "id", None):
+        try:
+            log_msg = await send_file(FileStream, db_id, file_info["file_id"], message)
+            file_id_info.update(await update_file_id(log_msg.id, multi_clients))
+            await db.update_file_ids(db_id, file_id_info)
+        except Exception as error:
+            logging.warning("Could not rebuild bot file reference for %s: %s", db_id, error)
+
+    refreshed = await db.get_file(db_id)
+    refreshed_file_ids = refreshed.setdefault("file_ids", {})
+    if str(client.id) not in refreshed_file_ids:
+        return None
+
+    file_id = FileId.decode(refreshed_file_ids[str(client.id)])
+    setattr(file_id, "file_size", refreshed['file_size'])
+    setattr(file_id, "mime_type", refreshed['mime_type'])
+    setattr(file_id, "file_name", refreshed['file_name'])
+    setattr(file_id, "unique_id", refreshed['file_unique_id'])
+    return file_id
+
+
 def get_media_from_message(message: "Message") -> Any:
     media_types = (
         "audio",
@@ -126,9 +164,12 @@ async def update_file_id(msg_id, multi_clients):
 
 
 async def send_file(client: Client, db_id, file_id: str, message):
-    file_caption = getattr(message, 'caption', None) or get_name(message)
+    file_caption = getattr(message, 'caption', None) or (get_name(message) if isinstance(message, Message) else f"File {db_id}")
     log_msg = await client.send_cached_media(chat_id=Telegram.FLOG_CHANNEL, file_id=file_id,
                                              caption=f'**{file_caption}**')
+
+    if not isinstance(message, Message):
+        return log_msg
 
     if message.chat.type == ChatType.PRIVATE:
         await log_msg.reply_text(
@@ -141,4 +182,3 @@ async def send_file(client: Client, db_id, file_id: str, message):
 
     return log_msg
     # return await client.send_cached_media(Telegram.BIN_CHANNEL, file_id)
-

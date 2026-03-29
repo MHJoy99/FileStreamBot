@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileStream Admin Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #09111c;
+            --panel: rgba(12, 22, 35, 0.88);
+            --panel-border: rgba(120, 182, 255, 0.18);
+            --text: #edf5ff;
+            --muted: #8ca5c3;
+            --accent: #6dd3ff;
+            --accent-strong: #1fb8ff;
+            --accent-warm: #ffd166;
+            --danger: #ff8a80;
+            --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "IBM Plex Sans", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(31, 184, 255, 0.22), transparent 32%),
+                radial-gradient(circle at bottom right, rgba(255, 209, 102, 0.18), transparent 26%),
+                linear-gradient(145deg, #08101b 0%, #0d1c2d 55%, #060a12 100%);
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+
+        .shell {
+            width: min(100%, 980px);
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            border: 1px solid var(--panel-border);
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            background: rgba(6, 10, 18, 0.55);
+            backdrop-filter: blur(12px);
+        }
+
+        .hero {
+            padding: 48px;
+            background:
+                linear-gradient(165deg, rgba(31, 184, 255, 0.16), rgba(31, 184, 255, 0.02)),
+                linear-gradient(180deg, rgba(255, 209, 102, 0.08), transparent 42%);
+            position: relative;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            pointer-events: none;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--accent-warm);
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 42px;
+            height: 1px;
+            background: currentColor;
+        }
+
+        h1 {
+            margin: 22px 0 14px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(2.2rem, 4vw, 3.7rem);
+            line-height: 0.98;
+        }
+
+        .lead {
+            max-width: 34rem;
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .meta {
+            margin-top: 32px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .meta-card {
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: rgba(7, 16, 27, 0.48);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .meta-card strong {
+            display: block;
+            font-size: 13px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 6px;
+        }
+
+        .panel {
+            padding: 36px;
+            background: var(--panel);
+        }
+
+        .panel h2 {
+            margin: 0 0 8px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.7rem;
+        }
+
+        .panel p {
+            margin: 0 0 24px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        form {
+            display: grid;
+            gap: 16px;
+        }
+
+        label {
+            display: grid;
+            gap: 8px;
+            color: #d9e9ff;
+            font-size: 0.95rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            outline: none;
+            font: inherit;
+        }
+
+        input:focus {
+            border-color: rgba(109, 211, 255, 0.55);
+            box-shadow: 0 0 0 4px rgba(109, 211, 255, 0.1);
+        }
+
+        .button {
+            margin-top: 8px;
+            border: 0;
+            border-radius: 18px;
+            padding: 15px 18px;
+            font: inherit;
+            font-weight: 600;
+            color: #04111f;
+            background: linear-gradient(135deg, var(--accent-warm), #fff1af);
+            cursor: pointer;
+            transition: transform 0.16s ease, box-shadow 0.16s ease;
+            box-shadow: 0 16px 30px rgba(255, 209, 102, 0.18);
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 20px 36px rgba(255, 209, 102, 0.24);
+        }
+
+        .error {
+            min-height: 24px;
+            color: var(--danger);
+            font-size: 0.95rem;
+        }
+
+        .hint {
+            margin-top: 18px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        .hint code {
+            color: var(--text);
+        }
+
+        @media (max-width: 860px) {
+            .shell {
+                grid-template-columns: 1fr;
+            }
+
+            .hero,
+            .panel {
+                padding: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="shell">
+        <div class="hero">
+            <div class="eyebrow">Private Dashboard</div>
+            <h1>Build PotPlayer playlists from your Telegram files.</h1>
+            <p class="lead">
+                Log in once, select files across pages, mint one playlist URL, and paste that single link into PotPlayer or VLC.
+            </p>
+            <div class="meta">
+                <div class="meta-card">
+                    <strong>Base URL</strong>
+                    {{ site_url }}
+                </div>
+                <div class="meta-card">
+                    <strong>Why this exists</strong>
+                    No more juggling dozens of direct links by hand. The dashboard turns your saved files into one clean playlist link.
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Owner Login</h2>
+            <p>Use your private dashboard credentials to enter the control room.</p>
+            <form method="post" action="/admin/login">
+                <label>
+                    Username
+                    <input type="text" name="username" autocomplete="username" required>
+                </label>
+                <label>
+                    Password
+                    <input type="password" name="password" autocomplete="current-password" required>
+                </label>
+                <div class="error">{{ error_message or "" }}</div>
+                <button class="button" type="submit">Enter Dashboard</button>
+            </form>
+            <div class="hint">
+                Keep this login private. The dashboard can generate playlist URLs that open your saved Telegram files directly.
+            </div>
+        </div>
+    </section>
+</body>
+</html>

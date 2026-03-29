@@ -1,0 +1,3008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ dashboard_title }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #05070c;
+            --bg-soft: #0b1119;
+            --panel: rgba(11, 17, 25, 0.88);
+            --panel-strong: rgba(13, 21, 31, 0.96);
+            --line: rgba(255, 255, 255, 0.08);
+            --line-strong: rgba(255, 255, 255, 0.14);
+            --text: #f6f8fb;
+            --muted: #95a5b6;
+            --accent: #ef4f3d;
+            --accent-soft: rgba(239, 79, 61, 0.18);
+            --success: #75e2ad;
+            --danger: #ff8d81;
+            --shadow: 0 28px 80px rgba(0, 0, 0, 0.38);
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--text);
+            font-family: "Manrope", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(239, 79, 61, 0.16), transparent 20%),
+                radial-gradient(circle at top right, rgba(55, 110, 255, 0.14), transparent 18%),
+                linear-gradient(180deg, #05070c 0%, #08111a 32%, #05080d 100%);
+        }
+
+        a { color: inherit; text-decoration: none; }
+        button, input, select, textarea { font: inherit; }
+
+        .shell {
+            width: min(1740px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 24px 0 48px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--muted);
+            font-weight: 700;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-1px);
+            border-color: var(--line-strong);
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .brand-mark {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, rgba(239, 79, 61, 0.92), rgba(255, 154, 84, 0.92));
+            color: #fff;
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            box-shadow: 0 18px 34px rgba(239, 79, 61, 0.24);
+        }
+
+        .brand-copy small,
+        .eyebrow,
+        .section-kicker {
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: #ffb8a6;
+            font-weight: 700;
+            font-size: 0.72rem;
+        }
+
+        .brand-copy strong {
+            display: block;
+            margin-top: 4px;
+            font-size: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-actions,
+        .top-actions,
+        .card-actions,
+        .selection-actions,
+        .toolbar-actions,
+        .modal-actions,
+        .file-actions,
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .pill,
+        .ghost,
+        .button,
+        .chip,
+        .tiny {
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .pill,
+        .ghost,
+        .button,
+        .tiny {
+            padding: 12px 18px;
+            cursor: pointer;
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .button {
+            border: 0;
+            color: #fff8f5;
+            background: linear-gradient(135deg, var(--accent), #ff9353);
+            box-shadow: 0 16px 40px rgba(239, 79, 61, 0.22);
+            font-weight: 800;
+        }
+
+        .pill:hover,
+        .ghost:hover,
+        .button:hover,
+        .media-card:hover,
+        .tiny:hover {
+            transform: translateY(-1px);
+        }
+
+        .ghost {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .tiny {
+            padding: 8px 12px;
+            font-size: 0.84rem;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        .panel {
+            border: 1px solid var(--line);
+            background: var(--panel);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(16px);
+        }
+
+        .hero {
+            position: relative;
+            min-height: 300px;
+            overflow: hidden;
+            border-radius: 36px;
+            border: 1px solid var(--line-strong);
+            box-shadow: var(--shadow);
+            background:
+                linear-gradient(90deg, rgba(4, 6, 10, 0.96) 0%, rgba(4, 6, 10, 0.72) 38%, rgba(4, 6, 10, 0.28) 100%),
+                linear-gradient(180deg, rgba(239, 79, 61, 0.16), rgba(4, 6, 10, 0.28)),
+                #0b121b center / cover no-repeat;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0;
+            height: 120px;
+            background: linear-gradient(180deg, transparent, rgba(5, 7, 12, 0.84));
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 1.28fr) minmax(250px, 0.72fr);
+            gap: 14px;
+            padding: 22px;
+            min-height: 300px;
+            align-items: stretch;
+        }
+
+        .hero-copy {
+            display: grid;
+            align-content: stretch;
+            gap: 12px;
+            max-width: 820px;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(2.1rem, 3.2vw, 3.2rem);
+            line-height: 0.92;
+            letter-spacing: -0.06em;
+            max-width: 10ch;
+        }
+
+        .hero p,
+        .muted {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .hero-sidebar {
+            display: grid;
+            gap: 10px;
+            align-self: stretch;
+        }
+
+        .hero-panel {
+            padding: 14px;
+            border-radius: 24px;
+            border: 1px solid var(--line);
+            background: rgba(9, 13, 20, 0.72);
+            backdrop-filter: blur(14px);
+        }
+
+        .hero-summary {
+            display: grid;
+            gap: 16px;
+            align-content: end;
+        }
+
+        .hero-panel h3 {
+            margin: 6px 0 0;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.08rem;
+            letter-spacing: -0.04em;
+        }
+
+        .hero-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .hero-stat {
+            padding: 10px 12px;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .hero-stat strong,
+        .hero-stat span {
+            display: block;
+        }
+
+        .hero-stat strong {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: -0.05em;
+        }
+
+        .hero-stat span {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .hero-quick-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .hero-quick {
+            display: grid;
+            gap: 4px;
+            padding: 10px 12px;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .hero-quick strong {
+            font-size: 0.86rem;
+        }
+
+        .hero-quick span {
+            color: var(--muted);
+            font-size: 0.8rem;
+            line-height: 1.45;
+        }
+
+        .hero-spotlight {
+            display: grid;
+            gap: 14px;
+        }
+
+        .hero-poster {
+            width: 100%;
+            aspect-ratio: 1.95 / 2.55;
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(239, 79, 61, 0.24), rgba(13, 21, 31, 0.2)), #141c26 center / cover no-repeat;
+        }
+
+        .stats-strip {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .search-surface {
+            margin-top: 20px;
+            padding: 20px 22px;
+            border-radius: 28px;
+        }
+
+        .surface-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 18px;
+        }
+
+        .surface-stats {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            padding: 18px 20px;
+            border-radius: 24px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.035);
+        }
+
+        .stat-card span {
+            display: block;
+            margin-top: 8px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 2rem;
+            letter-spacing: -0.04em;
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.8fr) minmax(320px, 0.8fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .control-card {
+            padding: 22px;
+            border-radius: 28px;
+        }
+
+        .control-card h2,
+        .section-head h2,
+        .modal-content h2 {
+            margin: 0;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: -0.04em;
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+        }
+
+        .field label {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            padding: 14px 16px;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: rgba(239, 79, 61, 0.42);
+            box-shadow: 0 0 0 4px rgba(239, 79, 61, 0.08);
+        }
+
+        textarea {
+            min-height: 104px;
+            resize: vertical;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 220px 160px 140px 180px auto auto;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .view-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .view-pill.is-active {
+            color: var(--text);
+            border-color: rgba(239, 79, 61, 0.38);
+            background: rgba(239, 79, 61, 0.12);
+        }
+
+        .toolbar-stack {
+            display: grid;
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .inline-panel {
+            padding: 16px;
+            border-radius: 22px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.025);
+        }
+
+        .scan-panel {
+            display: grid;
+            gap: 14px;
+        }
+
+        .scan-progress-track {
+            position: relative;
+            overflow: hidden;
+            height: 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--line);
+        }
+
+        .scan-progress-fill {
+            position: relative;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--accent), #ff9353, #ffc082);
+            box-shadow: 0 10px 30px rgba(239, 79, 61, 0.22);
+            transition: width 0.35s ease;
+        }
+
+        .scan-progress-fill.is-live {
+            min-width: 26%;
+            background-size: 200% 100%;
+            animation: scanPulse 1.4s linear infinite;
+        }
+
+        .scan-progress-fill.is-live::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+            transform: translateX(-100%);
+            animation: scanSweep 1.6s ease-in-out infinite;
+        }
+
+        .scan-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .scan-meta strong {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.05rem;
+            letter-spacing: -0.03em;
+        }
+
+        .scan-stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .scan-stat {
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .scan-stat strong {
+            display: block;
+            margin-top: 6px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.18rem;
+            letter-spacing: -0.04em;
+        }
+
+        .scan-last-file {
+            padding: 12px 14px;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .scan-last-file strong,
+        .scan-last-file span {
+            display: block;
+        }
+
+        .scan-last-file span {
+            margin-top: 6px;
+            color: var(--muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @keyframes scanPulse {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        @keyframes scanSweep {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(240%); }
+        }
+
+        .status-line {
+            min-height: 22px;
+            color: var(--muted);
+            font-size: 0.94rem;
+        }
+
+        .status-line.is-success { color: var(--success); }
+        .status-line.is-error { color: var(--danger); }
+
+        .sources-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 12px;
+            max-height: 250px;
+            overflow: auto;
+            padding-right: 4px;
+        }
+
+        .admin-users-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .admin-user-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+            padding: 14px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .admin-user-copy strong,
+        .admin-user-copy span {
+            display: block;
+        }
+
+        .admin-user-copy span {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .source-row {
+            padding: 14px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .source-row strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .library-section {
+            margin-top: 28px;
+        }
+
+        .workspace-section {
+            margin-top: 26px;
+        }
+
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .workspace-card {
+            border-radius: 28px;
+            overflow: hidden;
+        }
+
+        .workspace-card summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 20px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .workspace-card summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .workspace-body {
+            padding: 0 22px 22px;
+        }
+
+        .workspace-card[open] summary {
+            border-bottom: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .raw-shelf {
+            margin-top: 22px;
+            border-radius: 28px;
+            overflow: hidden;
+        }
+
+        .raw-shelf summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 18px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .raw-shelf summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .raw-shelf-body {
+            padding: 0 18px 18px;
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .section-copy {
+            max-width: 860px;
+        }
+
+        .section-copy p {
+            margin-top: 8px;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .file-browser {
+            display: grid;
+            gap: 12px;
+        }
+
+        .browser-row {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1.6fr) minmax(0, 0.9fr) auto;
+            gap: 16px;
+            align-items: center;
+            padding: 16px 18px;
+            border-radius: 24px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .browser-main {
+            min-width: 0;
+        }
+
+        .browser-main strong,
+        .browser-meta strong {
+            display: block;
+        }
+
+        .browser-main strong {
+            font-size: 1rem;
+            line-height: 1.45;
+            word-break: break-word;
+        }
+
+        .browser-main span,
+        .browser-meta span {
+            display: block;
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .browser-meta {
+            min-width: 0;
+        }
+
+        .browser-actions {
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .browser-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .selection-cart {
+            margin-top: 18px;
+            border-radius: 28px;
+            overflow: hidden;
+        }
+
+        .selection-cart summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 18px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .selection-cart summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .selection-cart-body {
+            padding: 0 18px 18px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .cart-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+            padding: 14px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .cart-copy {
+            min-width: 0;
+        }
+
+        .cart-copy strong,
+        .cart-copy span {
+            display: block;
+        }
+
+        .cart-copy span {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cart-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .confidence-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .confidence-chip.strong {
+            color: #fef3ee;
+            border-color: rgba(117, 226, 173, 0.25);
+            background: rgba(117, 226, 173, 0.12);
+        }
+
+        .confidence-chip.medium {
+            color: #fff4dd;
+            border-color: rgba(255, 192, 130, 0.24);
+            background: rgba(255, 192, 130, 0.12);
+        }
+
+        .confidence-chip.filename {
+            color: #d8e5f4;
+            border-color: rgba(121, 171, 230, 0.22);
+            background: rgba(121, 171, 230, 0.10);
+        }
+
+        .media-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 440px;
+            border-radius: 28px;
+            border: 1px solid var(--line);
+            background:
+                linear-gradient(180deg, rgba(5, 7, 12, 0.04) 12%, rgba(5, 7, 12, 0.86) 76%),
+                linear-gradient(180deg, rgba(239, 79, 61, 0.10), rgba(8, 12, 20, 0.08)),
+                #0e151f center / cover no-repeat;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            isolation: isolate;
+        }
+
+        .media-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(7, 10, 15, 0.02) 24%, rgba(7, 10, 15, 0.92) 100%);
+            z-index: 0;
+        }
+
+        .media-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .media-card:hover {
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        .media-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            padding: 14px 14px 0;
+        }
+
+        .media-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .media-content {
+            display: grid;
+            align-content: end;
+            min-height: 440px;
+            padding: 18px;
+        }
+
+        .media-title {
+            margin: 0;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.58rem;
+            line-height: 1.02;
+            letter-spacing: -0.04em;
+            text-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+        }
+
+        .media-description {
+            margin-top: 10px;
+            color: rgba(246, 248, 251, 0.88);
+            font-size: 0.92rem;
+            line-height: 1.55;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+        }
+
+        .media-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .media-footer small {
+            display: block;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .card-actions {
+            opacity: 1;
+            transform: none;
+            transition: opacity 0.18s ease, transform 0.18s ease, background 0.18s ease;
+        }
+
+        .media-card:hover .card-actions,
+        .media-card:focus-within .card-actions {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .spotlight-shelf {
+            margin-top: 16px;
+            padding: 16px 18px 18px;
+            border-radius: 26px;
+        }
+
+        .spotlight-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 14px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .spotlight-track {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: minmax(210px, 240px);
+            gap: 14px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            scroll-snap-type: x proximity;
+        }
+
+        .spotlight-card {
+            position: relative;
+            min-height: 320px;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            background:
+                linear-gradient(180deg, rgba(5, 7, 12, 0.02) 10%, rgba(5, 7, 12, 0.88) 82%),
+                linear-gradient(180deg, rgba(239, 79, 61, 0.08), rgba(8, 12, 20, 0.06)),
+                #0e151f center / cover no-repeat;
+            box-shadow: var(--shadow);
+            padding: 14px;
+            display: grid;
+            align-content: end;
+            scroll-snap-align: start;
+            cursor: pointer;
+        }
+
+        .spotlight-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(10, 14, 22, 0.06) 26%, rgba(10, 14, 22, 0.9) 100%);
+        }
+
+        .spotlight-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .spotlight-card h3 {
+            margin: 0;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.38rem;
+            line-height: 1.02;
+            letter-spacing: -0.05em;
+            text-shadow: 0 10px 28px rgba(0, 0, 0, 0.42);
+        }
+
+        .spotlight-card p {
+            margin: 8px 0 0;
+            color: rgba(246, 248, 251, 0.9);
+            line-height: 1.48;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+        }
+
+        .spotlight-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .empty-state,
+        .selection-bar,
+        .modal-card {
+            border: 1px solid var(--line);
+            background: var(--panel-strong);
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state {
+            padding: 30px;
+            border-radius: 30px;
+            color: var(--muted);
+        }
+
+        .pagination {
+            justify-content: space-between;
+            margin-top: 22px;
+            padding: 18px 22px;
+            border-radius: 28px;
+        }
+
+        .selection-bar {
+            position: sticky;
+            bottom: 18px;
+            z-index: 20;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            margin-top: 18px;
+            padding: 18px 20px;
+            border-radius: 24px;
+        }
+
+        .selection-summary strong {
+            display: block;
+            font-size: 1rem;
+        }
+
+        .selection-summary p {
+            margin-top: 6px;
+        }
+
+        .modal-shell {
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+            background: rgba(2, 4, 8, 0.78);
+            backdrop-filter: blur(10px);
+            padding: 18px;
+            overflow: auto;
+        }
+
+        .modal-card {
+            width: min(1280px, 100%);
+            margin: 0 auto;
+            border-radius: 34px;
+            overflow: hidden;
+        }
+
+        .modal-hero {
+            position: relative;
+            min-height: 360px;
+            background:
+                linear-gradient(90deg, rgba(5, 7, 12, 0.96) 0%, rgba(5, 7, 12, 0.72) 48%, rgba(5, 7, 12, 0.32) 100%),
+                linear-gradient(180deg, rgba(239, 79, 61, 0.12), rgba(5, 7, 12, 0.22)),
+                #101722 center / cover no-repeat;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 1;
+        }
+
+        .modal-hero-inner {
+            display: grid;
+            grid-template-columns: 220px minmax(0, 1fr);
+            gap: 24px;
+            padding: 32px;
+            align-items: end;
+            min-height: 360px;
+        }
+
+        .modal-poster {
+            width: 100%;
+            aspect-ratio: 2 / 3;
+            border-radius: 24px;
+            background: linear-gradient(180deg, rgba(239, 79, 61, 0.18), rgba(12, 18, 28, 0.16)), #141c25 center / cover no-repeat;
+            border: 1px solid var(--line);
+        }
+
+        .modal-content {
+            padding: 22px 28px 30px;
+        }
+
+        .files-grid {
+            display: grid;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .modal-toolbar {
+            display: grid;
+            gap: 14px;
+            margin-top: 18px;
+            margin-bottom: 10px;
+        }
+
+        .filter-panel {
+            display: grid;
+            gap: 12px;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--muted);
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+        }
+
+        .filter-chip:hover {
+            transform: translateY(-1px);
+            border-color: var(--line-strong);
+            color: var(--text);
+        }
+
+        .filter-chip.is-active {
+            color: var(--text);
+            border-color: rgba(239, 79, 61, 0.38);
+            background: rgba(239, 79, 61, 0.14);
+        }
+
+        .copy-field {
+            width: 100%;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            padding: 12px 14px;
+            font-size: 0.94rem;
+        }
+
+        .fix-match-panel {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 22px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+            display: grid;
+            gap: 12px;
+        }
+
+        .match-results {
+            display: grid;
+            gap: 10px;
+        }
+
+        .match-result {
+            padding: 14px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .match-result strong,
+        .match-result span {
+            display: block;
+        }
+
+        .match-result span {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .file-row {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            gap: 14px;
+            align-items: center;
+            padding: 14px 16px;
+            border-radius: 22px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+        }
+
+        .file-copy {
+            min-width: 0;
+        }
+
+        .file-copy strong {
+            display: block;
+            font-size: 0.98rem;
+        }
+
+        .file-copy span {
+            display: block;
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-actions {
+            justify-content: end;
+        }
+
+        @media (max-width: 1320px) {
+            .control-grid { grid-template-columns: 1fr; }
+            .search-form { grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto auto; }
+            .hero-inner { grid-template-columns: 1fr; }
+            .hero-spotlight { justify-self: start; }
+            .workspace-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 920px) {
+            .shell { width: min(100%, calc(100% - 20px)); }
+            .stats-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .search-form { grid-template-columns: 1fr; }
+            .media-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+            .modal-hero-inner { grid-template-columns: 1fr; }
+            .selection-bar,
+            .section-head,
+            .nav,
+            .surface-top { flex-direction: column; align-items: stretch; }
+            .nav-center { margin: 0; }
+            .browser-row { grid-template-columns: auto minmax(0, 1fr); }
+            .browser-meta,
+            .browser-actions { grid-column: 1 / -1; justify-content: start; }
+        }
+
+        @media (max-width: 700px) {
+            .hero-inner,
+            .control-card,
+            .modal-content { padding-left: 18px; padding-right: 18px; }
+            .hero { min-height: 460px; }
+            .media-grid { grid-template-columns: 1fr 1fr; }
+            .file-row { grid-template-columns: auto minmax(0, 1fr); }
+            .file-actions { grid-column: 1 / -1; justify-content: start; }
+            .scan-stats { grid-template-columns: 1fr; }
+            .media-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script>
+        window.__ADMIN_DATA__ = {{ initial_data | tojson }};
+    </script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel">
+        {% raw %}
+        const { useEffect, useState } = React;
+
+        const initialData = window.__ADMIN_DATA__ || {};
+        const STORAGE_KEY = "filestream-selected-files";
+
+        function readSelection() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function writeSelection(values) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(new Set(values))));
+        }
+
+        function formatEpisodeLabel(file) {
+            if (file.season && file.episode) {
+                return `S${String(file.season).padStart(2, "0")}E${String(file.episode).padStart(2, "0")}`;
+            }
+            return "Video File";
+        }
+
+        function describeScanStatus(scanStatus) {
+            if (!scanStatus || !scanStatus.chat_id) {
+                return "No source scan has been started yet.";
+            }
+            const parts = [
+                scanStatus.mode === "sync" ? (scanStatus.running ? "syncing new posts" : "new-post sync idle") : (scanStatus.running ? "scan running" : "scan idle"),
+                `chat ${scanStatus.chat_id}`,
+                `${scanStatus.imported_files} imported`,
+                `${scanStatus.duplicate_files} duplicates`,
+                `${scanStatus.matched_videos} matched`,
+            ];
+            if (scanStatus.last_file_name) {
+                parts.push(`last ${scanStatus.last_file_name}`);
+            }
+            if (scanStatus.error) {
+                parts.push(`error ${scanStatus.error}`);
+            }
+            return parts.join(" · ");
+        }
+
+        function formatNumber(value) {
+            return new Intl.NumberFormat().format(Number(value) || 0);
+        }
+
+        function formatDuration(totalSeconds) {
+            const seconds = Math.max(0, Number(totalSeconds) || 0);
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const remainder = seconds % 60;
+            if (hours) {
+                return `${hours}h ${String(minutes).padStart(2, "0")}m`;
+            }
+            if (minutes) {
+                return `${minutes}m ${String(remainder).padStart(2, "0")}s`;
+            }
+            return `${remainder}s`;
+        }
+
+        function getScanProgress(scanStatus) {
+            if (!scanStatus || !scanStatus.chat_id) {
+                return {
+                    percent: 0,
+                    indeterminate: false,
+                    headline: "No source scan started yet",
+                    detail: "Add a source chat ID and start a scan.",
+                };
+            }
+
+            const totalMessages = Number(scanStatus.total_messages) || 0;
+            const scannedMessages = Number(scanStatus.scanned_messages) || 0;
+            const elapsed = formatDuration(scanStatus.elapsed_seconds);
+            const rate = scanStatus.messages_per_second ? `${scanStatus.messages_per_second}/s` : "warming up";
+
+            if (scanStatus.running) {
+                if (totalMessages > 0) {
+                    const percent = Math.max(2, Math.min(100, Number(scanStatus.progress_percent) || 0));
+                    return {
+                        percent,
+                        indeterminate: false,
+                        headline: scanStatus.mode === "sync" ? `${percent.toFixed(1)}% of new posts checked` : `${percent.toFixed(1)}% scanned`,
+                        detail: `${formatNumber(scannedMessages)} of ${formatNumber(totalMessages)} messages · ${elapsed} · ${rate}`,
+                    };
+                }
+                return {
+                    percent: 72,
+                    indeterminate: true,
+                    headline: scanStatus.mode === "sync" ? `Syncing ${formatNumber(scannedMessages)} new posts` : `Scanning ${formatNumber(scannedMessages)} messages`,
+                    detail: `${elapsed} · ${rate}`,
+                };
+            }
+
+            if (scanStatus.error) {
+                return {
+                    percent: 100,
+                    indeterminate: false,
+                    headline: "Scan stopped with an error",
+                    detail: scanStatus.error,
+                };
+            }
+
+            return {
+                percent: scanStatus.chat_id ? 100 : 0,
+                indeterminate: false,
+                headline: "Scan finished",
+                detail: `${formatNumber(scannedMessages)} messages checked in ${elapsed}`,
+            };
+        }
+
+        function seasonCount(files) {
+            const seasons = new Set(files.filter((file) => file.season).map((file) => file.season));
+            return seasons.size;
+        }
+
+        function formatParsedMeta(file) {
+            if (file.season && file.episode) {
+                return `S${String(file.season).padStart(2, "0")}E${String(file.episode).padStart(2, "0")} · ${file.media_kind?.toUpperCase?.() || "VIDEO"}`;
+            }
+            if (file.season) {
+                return `Season ${file.season} · ${file.media_kind?.toUpperCase?.() || "VIDEO"}`;
+            }
+            return file.media_kind?.toUpperCase?.() || "VIDEO";
+        }
+
+        function formatConfidence(confidence) {
+            if (confidence === "strong") {
+                return "Strong Match";
+            }
+            if (confidence === "medium") {
+                return "Meta Match";
+            }
+            return "Filename";
+        }
+
+        function formatLockMode(lockMode, locked) {
+            if (!locked) {
+                return "Auto Match";
+            }
+            if (lockMode === "filename") {
+                return "Filename Locked";
+            }
+            return "TMDb Locked";
+        }
+
+        function detectQualityTag(fileName) {
+            const value = String(fileName || "").toLowerCase();
+            if (/(^|[^a-z0-9])(2160p|4k)(?=[^a-z0-9]|$)/.test(value)) {
+                return "2160p";
+            }
+            if (/(^|[^a-z0-9])1440p(?=[^a-z0-9]|$)/.test(value)) {
+                return "1440p";
+            }
+            if (/(^|[^a-z0-9])1080p?(?=[^a-z0-9]|$)/.test(value)) {
+                return "1080p";
+            }
+            if (/(^|[^a-z0-9])720p?(?=[^a-z0-9]|$)/.test(value)) {
+                return "720p";
+            }
+            if (/(^|[^a-z0-9])480p?(?=[^a-z0-9]|$)/.test(value)) {
+                return "480p";
+            }
+            return "Other";
+        }
+
+        function buildVariantBuckets(files) {
+            const buckets = [];
+            const lookup = new Map();
+            files.forEach((file) => {
+                const key = file.season && file.episode
+                    ? `s${file.season}e${file.episode}`
+                    : file.name;
+                if (!lookup.has(key)) {
+                    lookup.set(key, {
+                        key,
+                        label: formatEpisodeLabel(file),
+                        files: [],
+                    });
+                    buckets.push(lookup.get(key));
+                }
+                lookup.get(key).files.push(file);
+            });
+            return buckets;
+        }
+
+        function jumpToSection(sectionId) {
+            const node = document.getElementById(sectionId);
+            if (!node) {
+                return;
+            }
+            if (node.tagName === "DETAILS") {
+                node.open = true;
+            }
+            node.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        function App() {
+            const [selection, setSelection] = useState([]);
+            const [playlistTitle, setPlaylistTitle] = useState("");
+            const [scanChatId, setScanChatId] = useState("");
+            const [playlistUrl, setPlaylistUrl] = useState("");
+            const [telegramBundleUrl, setTelegramBundleUrl] = useState("");
+            const [status, setStatus] = useState({ message: "", mode: "" });
+            const [scanStatus, setScanStatus] = useState(initialData.scan_status);
+            const [activeGroupKey, setActiveGroupKey] = useState("");
+            const [fixMatchOpen, setFixMatchOpen] = useState(false);
+            const [fixMatchQuery, setFixMatchQuery] = useState("");
+            const [fixMatchTmdbId, setFixMatchTmdbId] = useState("");
+            const [fixMatchResults, setFixMatchResults] = useState([]);
+            const [fixMatchLoading, setFixMatchLoading] = useState(false);
+            const [activeQualityFilter, setActiveQualityFilter] = useState("all");
+            const [adminUsers, setAdminUsers] = useState(initialData.admin_users || []);
+            const [newAdminUsername, setNewAdminUsername] = useState("");
+            const [newAdminPassword, setNewAdminPassword] = useState("");
+            const [heroIndex, setHeroIndex] = useState(0);
+
+            useEffect(() => {
+                setSelection(readSelection());
+            }, []);
+
+            useEffect(() => {
+                writeSelection(selection);
+            }, [selection]);
+
+            useEffect(() => {
+                if (!scanStatus || !scanStatus.running) {
+                    return;
+                }
+
+                const timer = setInterval(async () => {
+                    try {
+                        const response = await fetch(initialData.scan_status_endpoint);
+                        const payload = await response.json();
+                        if (payload.ok) {
+                            setScanStatus(payload.scan);
+                        }
+                    } catch (error) {
+                    }
+                }, 1500);
+
+                return () => clearInterval(timer);
+            }, [scanStatus]);
+
+            const groups = initialData.groups || [];
+            const fileRows = initialData.file_rows || [];
+            const isExplorerView = initialData.view_mode === "files";
+            const strongMatchGroups = groups.filter((group) => (group.confidence || "").toLowerCase() === "strong");
+            const metaMatchGroups = groups.filter((group) => (group.confidence || "").toLowerCase() === "medium");
+            const filenameGroups = groups.filter((group) => !["strong", "medium"].includes((group.confidence || "").toLowerCase()));
+            const polishedGroups = groups.filter((group) => group.poster_url || group.backdrop_url || group.overview);
+            const rawGroups = groups.filter((group) => !polishedGroups.includes(group));
+            const displayGroups = polishedGroups.length ? polishedGroups : groups;
+            const homepageLeadGroups = strongMatchGroups.length
+                ? strongMatchGroups
+                : (metaMatchGroups.length ? metaMatchGroups : displayGroups);
+            const strongMatchShelf = strongMatchGroups.length ? strongMatchGroups : homepageLeadGroups;
+            const primaryWallGroups = homepageLeadGroups;
+            const secondaryMetaGroups = strongMatchGroups.length ? metaMatchGroups : [];
+            const secondaryFilenameGroups = filenameGroups.length ? filenameGroups : rawGroups;
+            const featuredCandidates = isExplorerView ? [] : homepageLeadGroups;
+            const featuredGroup = featuredCandidates.length ? featuredCandidates[heroIndex % featuredCandidates.length] : null;
+            const activeGroup = isExplorerView ? null : (groups.find((group) => group.key === activeGroupKey) || null);
+            const visibleLinks = initialData.visible_links_text || "";
+            const activeSelectedIds = activeGroup
+                ? activeGroup.files.filter((file) => selection.includes(file.id)).map((file) => file.id)
+                : [];
+            const activeSelectionCount = activeSelectedIds.length;
+            const scanProgress = getScanProgress(scanStatus);
+            const visibleIds = isExplorerView
+                ? fileRows.map((file) => file.id)
+                : primaryWallGroups.flatMap((group) => group.files.map((file) => file.id));
+            const fileLookup = {};
+            fileRows.forEach((file) => {
+                fileLookup[file.id] = {
+                    id: file.id,
+                    label: file.name,
+                    sublabel: `${file.source_title} · ${file.size}`,
+                    confidence: file.confidence || "filename",
+                };
+            });
+            groups.forEach((group) => {
+                group.files.forEach((file) => {
+                    fileLookup[file.id] = {
+                        id: file.id,
+                        label: file.name,
+                        sublabel: `${group.display_title} · ${file.size}`,
+                        confidence: group.confidence || "filename",
+                    };
+                });
+            });
+            const visibleSelectionItems = selection.map((id) => fileLookup[id]).filter(Boolean);
+            const hiddenSelectionCount = selection.length - visibleSelectionItems.length;
+            const activeQualityOptions = activeGroup
+                ? Array.from(new Set(activeGroup.files.map((file) => detectQualityTag(file.name)))).sort((left, right) => {
+                    const order = ["2160p", "1440p", "1080p", "720p", "480p", "Other"];
+                    return order.indexOf(left) - order.indexOf(right);
+                })
+                : [];
+            const activeFilteredFiles = activeGroup
+                ? activeGroup.files.filter((file) => activeQualityFilter === "all" || detectQualityTag(file.name) === activeQualityFilter)
+                : [];
+            const activeBuckets = activeGroup ? buildVariantBuckets(activeFilteredFiles) : [];
+            const activeFilteredIds = activeFilteredFiles.map((file) => file.id);
+            const activeFilteredSelectedIds = activeFilteredFiles
+                .filter((file) => selection.includes(file.id))
+                .map((file) => file.id);
+            const activeFilteredSelectionCount = activeFilteredFiles.filter((file) => selection.includes(file.id)).length;
+
+            useEffect(() => {
+                setFixMatchOpen(false);
+                setFixMatchResults([]);
+                setFixMatchLoading(false);
+                setFixMatchQuery(activeGroup ? activeGroup.display_title : "");
+                setFixMatchTmdbId(activeGroup && activeGroup.tmdb_id ? String(activeGroup.tmdb_id) : "");
+                setActiveQualityFilter("all");
+            }, [activeGroupKey]);
+
+            useEffect(() => {
+                if (!featuredCandidates.length || isExplorerView) {
+                    return undefined;
+                }
+                const timer = window.setInterval(() => {
+                    setHeroIndex((current) => (current + 1) % featuredCandidates.length);
+                }, 5000);
+                return () => window.clearInterval(timer);
+            }, [featuredCandidates.length, isExplorerView]);
+
+            function copyTextFallback(value) {
+                const input = document.createElement("textarea");
+                input.value = value;
+                input.setAttribute("readonly", "");
+                input.style.position = "fixed";
+                input.style.opacity = "0";
+                input.style.pointerEvents = "none";
+                document.body.appendChild(input);
+                input.focus();
+                input.select();
+                input.setSelectionRange(0, input.value.length);
+                let copied = false;
+                try {
+                    copied = document.execCommand("copy");
+                } catch (error) {
+                    copied = false;
+                }
+                document.body.removeChild(input);
+                return copied;
+            }
+
+            function hasSelected(id) {
+                return selection.includes(id);
+            }
+
+            function toggleFile(id) {
+                setSelection((current) =>
+                    current.includes(id)
+                        ? current.filter((item) => item !== id)
+                        : [...current, id]
+                );
+            }
+
+            function selectGroup(ids) {
+                setSelection((current) => Array.from(new Set([...current, ...ids])));
+                setStatus({ message: "Title added to your playlist selection.", mode: "success" });
+            }
+
+            function removeGroup(ids) {
+                setSelection((current) => current.filter((item) => !ids.includes(item)));
+                setStatus({ message: "Title removed from your playlist selection.", mode: "success" });
+            }
+
+            function selectFilteredGroupFiles() {
+                if (!activeFilteredIds.length) {
+                    setStatus({ message: "No files matched this filter.", mode: "error" });
+                    return;
+                }
+                setSelection((current) => Array.from(new Set([...current, ...activeFilteredIds])));
+                setStatus({ message: `${activeFilteredIds.length} filtered files added to your playlist selection.`, mode: "success" });
+            }
+
+            function clearFilteredGroupFiles() {
+                if (!activeFilteredIds.length) {
+                    setStatus({ message: "No files matched this filter.", mode: "error" });
+                    return;
+                }
+                setSelection((current) => current.filter((item) => !activeFilteredIds.includes(item)));
+                setStatus({ message: "Filtered files removed from your playlist selection.", mode: "success" });
+            }
+
+            function toggleVisible() {
+                const everySelected = visibleIds.length && visibleIds.every((id) => selection.includes(id));
+                if (everySelected) {
+                    setSelection((current) => current.filter((id) => !visibleIds.includes(id)));
+                    setStatus({ message: isExplorerView ? "Visible files removed from selection." : "Visible titles removed from selection.", mode: "success" });
+                } else {
+                    setSelection((current) => Array.from(new Set([...current, ...visibleIds])));
+                    setStatus({ message: isExplorerView ? "Visible files added to selection." : "Visible titles added to selection.", mode: "success" });
+                }
+            }
+
+            function moveSelection(id, direction) {
+                setSelection((current) => {
+                    const index = current.indexOf(id);
+                    if (index < 0) {
+                        return current;
+                    }
+                    const targetIndex = index + direction;
+                    if (targetIndex < 0 || targetIndex >= current.length) {
+                        return current;
+                    }
+                    const next = [...current];
+                    [next[index], next[targetIndex]] = [next[targetIndex], next[index]];
+                    return next;
+                });
+            }
+
+            async function createPlaylistForIds(fileIds, suggestedTitle = "") {
+                if (!fileIds.length) {
+                    setStatus({ message: "Select at least one file first.", mode: "error" });
+                    return;
+                }
+                setPlaylistUrl("");
+                setStatus({ message: "Creating playlist link...", mode: "" });
+                try {
+                    const response = await fetch(initialData.create_playlist_endpoint, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ title: suggestedTitle || playlistTitle, file_ids: fileIds }),
+                    });
+                    const payload = await response.json();
+                    if (!response.ok || !payload.ok) {
+                        throw new Error(payload.error || "Playlist creation failed.");
+                    }
+                    setPlaylistUrl(payload.playlist_url);
+                    setStatus({ message: `Playlist ready with ${payload.count} files.`, mode: "success" });
+                } catch (error) {
+                    setStatus({ message: error.message || "Playlist creation failed.", mode: "error" });
+                }
+            }
+
+            async function createPlaylist() {
+                await createPlaylistForIds(selection, playlistTitle);
+            }
+
+            async function createTelegramBundleForIds(fileIds, suggestedTitle = "") {
+                if (!fileIds.length) {
+                    setStatus({ message: "Select at least one file first.", mode: "error" });
+                    return;
+                }
+                setTelegramBundleUrl("");
+                setStatus({ message: "Creating Telegram bundle link...", mode: "" });
+                try {
+                    const response = await fetch(initialData.create_tg_bundle_endpoint, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ title: suggestedTitle || playlistTitle, file_ids: fileIds }),
+                    });
+                    const payload = await response.json();
+                    if (!response.ok || !payload.ok) {
+                        throw new Error(payload.error || "Telegram bundle creation failed.");
+                    }
+                    setTelegramBundleUrl(payload.telegram_url);
+                    setStatus({ message: `Telegram bundle ready with ${payload.count} files.`, mode: "success" });
+                } catch (error) {
+                    setStatus({ message: error.message || "Telegram bundle creation failed.", mode: "error" });
+                }
+            }
+
+            async function createTelegramBundle() {
+                await createTelegramBundleForIds(selection, playlistTitle);
+            }
+
+            async function startScan(fullRescan = false) {
+                if (!scanChatId.trim()) {
+                    setStatus({ message: "Enter a source chat ID first.", mode: "error" });
+                    return;
+                }
+                setStatus({ message: fullRescan ? "Starting full history rescan..." : "Starting sync for new posts only...", mode: "" });
+                try {
+                    const response = await fetch(initialData.scan_start_endpoint, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ chat_id: scanChatId.trim(), full_rescan: fullRescan }),
+                    });
+                    const payload = await response.json();
+                    if (!response.ok || !payload.ok) {
+                        throw new Error(payload.error || "Scan could not be started.");
+                    }
+                    setScanStatus(payload.scan);
+                    setStatus({
+                        message: fullRescan
+                            ? "Full rescan started. This will walk the whole chat history again."
+                            : "Tracked source sync started. Only newer posts should be checked.",
+                        mode: "success",
+                    });
+                } catch (error) {
+                    setStatus({ message: error.message || "Scan could not be started.", mode: "error" });
+                }
+            }
+
+            async function refreshScan() {
+                try {
+                    const response = await fetch(initialData.scan_status_endpoint);
+                    const payload = await response.json();
+                    if (payload.ok) {
+                        setScanStatus(payload.scan);
+                    }
+                } catch (error) {
+                    setStatus({ message: "Could not refresh scan status.", mode: "error" });
+                }
+            }
+
+            async function copyText(value, message) {
+                try {
+                    if (navigator.clipboard && window.isSecureContext) {
+                        await navigator.clipboard.writeText(value);
+                        setStatus({ message, mode: "success" });
+                        return;
+                    }
+                    if (copyTextFallback(value)) {
+                        setStatus({ message, mode: "success" });
+                        return;
+                    }
+                    throw new Error("Clipboard unavailable");
+                } catch (error) {
+                    setStatus({ message: "Clipboard copy failed on this device.", mode: "error" });
+                }
+            }
+
+            async function refreshAdminUsers() {
+                try {
+                    const response = await fetch(initialData.admin_users_endpoint);
+                    const payload = await response.json();
+                    if (response.ok && payload.ok) {
+                        setAdminUsers(payload.users || []);
+                    }
+                } catch (error) {
+                }
+            }
+
+            async function createAdminUser() {
+                if (!newAdminUsername.trim() || !newAdminPassword) {
+                    setStatus({ message: "Enter both username and password for the new website user.", mode: "error" });
+                    return;
+                }
+                try {
+                    const response = await fetch(initialData.admin_users_endpoint, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            username: newAdminUsername.trim(),
+                            password: newAdminPassword,
+                        }),
+                    });
+                    const payload = await response.json();
+                    if (!response.ok || !payload.ok) {
+                        throw new Error(payload.error || "Could not create admin user.");
+                    }
+                    setNewAdminUsername("");
+                    setNewAdminPassword("");
+                    await refreshAdminUsers();
+                    setStatus({ message: "Website user created successfully.", mode: "success" });
+                } catch (error) {
+                    setStatus({ message: error.message || "Could not create admin user.", mode: "error" });
+                }
+            }
+
+            async function deleteAdminUser(username) {
+                if (!window.confirm(`Delete website user "${username}"?`)) {
+                    return;
+                }
+                try {
+                    const response = await fetch(`${initialData.admin_users_endpoint}/${encodeURIComponent(username)}`, {
+                        method: "DELETE",
+                    });
+                    const payload = await response.json();
+                    if (!response.ok || !payload.ok) {
+                        throw new Error(payload.error || "Could not delete admin user.");
+                    }
+                    await refreshAdminUsers();
+                    setStatus({ message: `Deleted website user ${username}.`, mode: "success" });
+                } catch (error) {
+                    setStatus({ message: error.message || "Could not delete admin user.", mode: "error" });
+                }
+            }
+
+            async function searchFixMatches() {
+                if (!activeGroup || !fixMatchQuery.trim()) {
+                    setStatus({ message: "Enter a title to search first.", mode: "error" });
+                    return;
+                }
+                setFixMatchLoading(true);
+                try {
+                    const params = new URLSearchParams({
+                        q: fixMatchQuery.trim(),
+                        kind: activeGroup.media_kind || "tv",
+                    });
+                    const response = await fetch(`${initialData.catalog_search_endpoint}?${params.toString()}`);
+                    const payload = await response.json();
+                    if (!response.ok || !payload.ok) {
+                        throw new Error(payload.error || "Could not search TMDb.");
+                    }
+                    setFixMatchResults(payload.results || []);
+                    setStatus({ message: `Found ${payload.results?.length || 0} match candidates.`, mode: "success" });
+                } catch (error) {
+                    setStatus({ message: error.message || "Could not search TMDb.", mode: "error" });
+                } finally {
+                    setFixMatchLoading(false);
+                }
+            }
+
+            async function lookupFixMatchById() {
+                if (!activeGroup || !fixMatchTmdbId.trim()) {
+                    setStatus({ message: "Enter a TMDb ID first.", mode: "error" });
+                    return;
+                }
+                setFixMatchLoading(true);
+                try {
+                    const params = new URLSearchParams({
+                        id: fixMatchTmdbId.trim(),
+                        kind: activeGroup.media_kind || "tv",
+                    });
+                    const response = await fetch(`${initialData.catalog_lookup_endpoint}?${params.toString()}`);
+                    const payload = await response.json();
+                    if (!response.ok || !payload.ok) {
+                        throw new Error(payload.error || "Could not look up that TMDb ID.");
+                    }
+                    setFixMatchResults(payload.result ? [payload.result] : []);
+                    setStatus({ message: "TMDb ID loaded. Review it and apply the lock if it is correct.", mode: "success" });
+                } catch (error) {
+                    setStatus({ message: error.message || "Could not look up that TMDb ID.", mode: "error" });
+                } finally {
+                    setFixMatchLoading(false);
+                }
+            }
+
+            async function applyFixMatch(result) {
+                if (!activeGroup) {
+                    return;
+                }
+                try {
+                    const response = await fetch(initialData.catalog_override_endpoint, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            group_key: activeGroup.key,
+                            title: result.title,
+                            media_kind: activeGroup.media_kind,
+                            poster_url: result.poster_url || "",
+                            backdrop_url: result.backdrop_url || "",
+                            overview: result.overview || "",
+                            tmdb_id: result.tmdb_id || null,
+                            tmdb_media_type: result.tmdb_media_type || activeGroup.media_kind,
+                            release_year: result.release_year || "",
+                            lock_mode: "tmdb",
+                        }),
+                    });
+                    const payload = await response.json();
+                    if (!response.ok || !payload.ok) {
+                        throw new Error(payload.error || "Could not apply match.");
+                    }
+                    setStatus({ message: `Locked match for ${result.title}. Refresh the page to see the updated card.`, mode: "success" });
+                    setFixMatchOpen(false);
+                } catch (error) {
+                    setStatus({ message: error.message || "Could not apply match.", mode: "error" });
+                }
+            }
+
+            async function useFilenameOnly() {
+                if (!activeGroup) {
+                    return;
+                }
+                try {
+                    const response = await fetch(initialData.catalog_override_endpoint, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            group_key: activeGroup.key,
+                            title: activeGroup.display_title,
+                            media_kind: activeGroup.media_kind,
+                            poster_url: "",
+                            backdrop_url: "",
+                            overview: "",
+                            tmdb_id: null,
+                            tmdb_media_type: activeGroup.media_kind,
+                            release_year: activeGroup.release_year || "",
+                            lock_mode: "filename",
+                        }),
+                    });
+                    const payload = await response.json();
+                    if (!response.ok || !payload.ok) {
+                        throw new Error(payload.error || "Could not switch to filename mode.");
+                    }
+                    setStatus({ message: `Locked ${activeGroup.display_title} to filename mode. Refresh to see the raw version.`, mode: "success" });
+                    setFixMatchOpen(false);
+                } catch (error) {
+                    setStatus({ message: error.message || "Could not switch to filename mode.", mode: "error" });
+                }
+            }
+
+            async function clearManualLock() {
+                if (!activeGroup) {
+                    return;
+                }
+                try {
+                    const response = await fetch(initialData.catalog_clear_endpoint, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ group_key: activeGroup.key }),
+                    });
+                    const payload = await response.json();
+                    if (!response.ok || !payload.ok) {
+                        throw new Error(payload.error || "Could not clear manual lock.");
+                    }
+                    setStatus({ message: `Cleared manual mapping for ${activeGroup.display_title}. Refresh to re-run automatic matching.`, mode: "success" });
+                    setFixMatchOpen(false);
+                } catch (error) {
+                    setStatus({ message: error.message || "Could not clear manual lock.", mode: "error" });
+                }
+            }
+
+            return (
+                <div className="shell">
+                    <header className="nav">
+                        <div className="brand">
+                            <div className="brand-mark">FS</div>
+                            <div className="brand-copy">
+                                <small>Private Streaming Library</small>
+                                <strong>Telegram Kingdom Control Room</strong>
+                            </div>
+                        </div>
+                        <nav className="nav-center" aria-label="Primary">
+                            <button className="nav-link" type="button" onClick={() => window.location.assign("/admin")}>Home</button>
+                            <button className="nav-link" type="button" onClick={() => jumpToSection("library")}>Library</button>
+                            <button className="nav-link" type="button" onClick={() => jumpToSection("scanner")}>Scanner</button>
+                            <button className="nav-link" type="button" onClick={() => jumpToSection("sources")}>Sources</button>
+                        </nav>
+                        <div className="nav-actions">
+                            <span className="chip">{initialData.username}</span>
+                            <a className="ghost" href={initialData.all_playlist_url}>Export All M3U</a>
+                            <a className="ghost" href={initialData.all_links_url}>Export All Links</a>
+                            <form method="post" action={initialData.logout_url}>
+                                <button className="ghost" type="submit">Log Out</button>
+                            </form>
+                        </div>
+                    </header>
+
+                    <section
+                        id="home"
+                        className="hero"
+                        style={featuredGroup && featuredGroup.backdrop_url ? { backgroundImage: `linear-gradient(90deg, rgba(4, 6, 10, 0.96) 0%, rgba(4, 6, 10, 0.72) 38%, rgba(4, 6, 10, 0.28) 100%), linear-gradient(180deg, rgba(239, 79, 61, 0.16), rgba(4, 6, 10, 0.28)), url('${featuredGroup.backdrop_url}')` } : undefined}
+                    >
+                        <div className="hero-inner">
+                            <div className="hero-copy">
+                                <div className="eyebrow">Streaming Control Room</div>
+                                <h1>Strong matches first. Raw files when you need control.</h1>
+                                <p>
+                                    The homepage now favors the cleanest matched titles first. If there are no strong matches in the current view,
+                                    it falls back to the best available matched titles instead of leaving the screen empty.
+                                </p>
+                                <div className="top-actions">
+                                    <a className="button" href="#library">Browse Library</a>
+                                    <button className="ghost" type="button" onClick={() => jumpToSection("scanner")}>Open Scanner</button>
+                                    <button className="ghost" type="button" onClick={() => copyText(visibleLinks, "Visible page links copied.")}>Copy Visible Links</button>
+                                </div>
+                                <div className="hero-meta">
+                                    <span className="chip">{initialData.library_total_files} files</span>
+                                    <span className="chip">
+                                        {isExplorerView ? `${initialData.total_files} files in this view` : `${initialData.total_groups} titles in this view`}
+                                    </span>
+                                    <span className="chip">{initialData.total_size}</span>
+                                    <span className="chip">
+                                        {strongMatchGroups.length
+                                            ? `${strongMatchGroups.length} strong matches on this page`
+                                            : `${metaMatchGroups.length} best available matches on this page`}
+                                    </span>
+                                    {initialData.search_query ? <span className="chip">Query: {initialData.search_query}</span> : null}
+                                </div>
+                                <div className="hero-quick-grid">
+                                    <div className="hero-quick">
+                                        <strong>Homepage priority</strong>
+                                        <span>Strong-match titles lead when they exist. If not, the page falls back to the best available matched cards.</span>
+                                    </div>
+                                    <div className="hero-quick">
+                                        <strong>Best fallback</strong>
+                                        <span>When metadata looks wrong, Explorer View gives you direct file browsing without poster noise.</span>
+                                    </div>
+                                    <div className="hero-quick">
+                                        <strong>Fast playlist flow</strong>
+                                        <span>Select exact files, filter by quality, and build one PotPlayer `.m3u` link from there.</span>
+                                    </div>
+                                    <div className="hero-quick">
+                                        <strong>Cleaner fixes</strong>
+                                        <span>Use Fix Match only when needed. Homepage shelves now stop weak matches from dominating the first screen.</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="hero-sidebar">
+                                {featuredGroup ? (
+                                    <div className="hero-panel hero-spotlight">
+                                        <div className="section-kicker">{strongMatchGroups.length ? "Featured Strong Match" : "Featured Best Available Match"}</div>
+                                        <div
+                                            className="hero-poster"
+                                            style={featuredGroup.poster_url ? { backgroundImage: `url('${featuredGroup.poster_url}')` } : undefined}
+                                        />
+                                        <h3>{featuredGroup.display_title}</h3>
+                                        <p className="muted" style={{ marginTop: 8 }}>
+                                            {featuredGroup.count} files
+                                            {featuredGroup.release_year ? ` · ${featuredGroup.release_year}` : ""}
+                                            {featuredGroup.media_kind ? ` · ${featuredGroup.media_kind.toUpperCase()}` : ""}
+                                        </p>
+                                        <div className="toolbar-actions">
+                                            <span className={`confidence-chip ${featuredGroup.confidence || "filename"}`}>{formatConfidence(featuredGroup.confidence)}</span>
+                                            <button className="button" type="button" onClick={() => setActiveGroupKey(featuredGroup.key)}>Open Title</button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="hero-panel hero-summary">
+                                        <div className="section-kicker">Featured Match</div>
+                                        <h3>No matched titles in this view yet</h3>
+                                        <p className="muted" style={{ marginTop: 8 }}>
+                                            This view does not have any strong or meta matches yet, so the homepage can only show raw file browsing below.
+                                        </p>
+                                    </div>
+                                )}
+                                <div className="hero-panel hero-summary">
+                                    <div className="section-kicker">Now Playing on This Page</div>
+                                    <h3>Better first click choices</h3>
+                                    <p className="muted" style={{ marginTop: 8 }}>
+                                        This spotlight rotates through the best matched titles on the current page, preferring Strong Match first and falling back only when needed.
+                                    </p>
+                                    {featuredCandidates.length ? (
+                                        <div className="toolbar-actions">
+                                            <button className="ghost" type="button" onClick={() => setHeroIndex((current) => featuredCandidates.length ? (current - 1 + featuredCandidates.length) % featuredCandidates.length : 0)}>Previous</button>
+                                            <button className="ghost" type="button" onClick={() => setHeroIndex((current) => featuredCandidates.length ? (current + 1) % featuredCandidates.length : 0)}>Next</button>
+                                        </div>
+                                    ) : null}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {!isExplorerView && strongMatchShelf.length ? (
+                        <section className="spotlight-shelf panel">
+                            <div className="spotlight-head">
+                                <div>
+                                    <div className="section-kicker">{strongMatchGroups.length ? "Strong Match Shelf" : "Best Available Shelf"}</div>
+                                    <h2 style={{ margin: "8px 0 0", fontFamily: '"Space Grotesk", sans-serif', fontSize: "1.8rem" }}>
+                                        {strongMatchGroups.length ? "Start with the clean cards" : "Start with the best matched cards available"}
+                                    </h2>
+                                    <p className="muted" style={{ marginTop: 8 }}>
+                                        {strongMatchGroups.length
+                                            ? "This row highlights the strongest matched titles first so the homepage feels more like a real streaming shelf."
+                                            : "There are no strong matches in this result set, so this row falls back to the cleanest available matched titles instead of going blank."}
+                                    </p>
+                                </div>
+                                <div className="surface-stats">
+                                    <span className="chip">
+                                        {strongMatchGroups.length ? `${strongMatchGroups.length} strong matches` : `${metaMatchGroups.length} meta matches`}
+                                    </span>
+                                    <span className="chip">{strongMatchShelf.length} poster-ready titles</span>
+                                </div>
+                            </div>
+                            <div className="spotlight-track">
+                                {strongMatchShelf.slice(0, 18).map((group) => (
+                                    <article
+                                        key={`spotlight-${group.key}`}
+                                        className="spotlight-card"
+                                        style={(group.poster_url || group.backdrop_url) ? { backgroundImage: `linear-gradient(180deg, rgba(5, 7, 12, 0.02) 10%, rgba(5, 7, 12, 0.88) 82%), linear-gradient(180deg, rgba(239, 79, 61, 0.08), rgba(8, 12, 20, 0.06)), url('${group.poster_url || group.backdrop_url}')` } : undefined}
+                                        onClick={() => setActiveGroupKey(group.key)}
+                                    >
+                                        <div className="spotlight-meta">
+                                            {group.release_year ? <span className="chip">{group.release_year}</span> : null}
+                                            <span className={`confidence-chip ${group.confidence || "filename"}`}>{formatConfidence(group.confidence)}</span>
+                                        </div>
+                                        <h3>{group.display_title}</h3>
+                                        {group.overview ? <p>{group.overview}</p> : <p>{group.count} files ready. Open this title to inspect episodes and build a playlist fast.</p>}
+                                        <div className="spotlight-meta">
+                                            <span className="chip">{group.count} files</span>
+                                            <span className="chip">{group.total_size}</span>
+                                            <span className="chip">{group.media_kind.toUpperCase()}</span>
+                                        </div>
+                                    </article>
+                                ))}
+                            </div>
+                        </section>
+                    ) : (
+                        !isExplorerView ? (
+                            <section className="spotlight-shelf panel">
+                                <div className="spotlight-head">
+                                    <div>
+                                        <div className="section-kicker">Best Available Shelf</div>
+                                        <h2 style={{ margin: "8px 0 0", fontFamily: '"Space Grotesk", sans-serif', fontSize: "1.55rem" }}>No matched titles in this result set yet</h2>
+                                        <p className="muted" style={{ marginTop: 8 }}>
+                                            This view does not have strong matches or meta matches yet, so the homepage shelf stays empty until there is at least one matched title.
+                                        </p>
+                                    </div>
+                                    <div className="surface-stats">
+                                        <span className="chip">0 matched titles</span>
+                                    </div>
+                                </div>
+                            </section>
+                        ) : null
+                    )}
+
+                    <section className="search-surface panel">
+                        <div className="surface-top">
+                            <div>
+                                <div className="section-kicker">Search and Filter</div>
+                                <h2 style={{ margin: "8px 0 0", fontFamily: '"Space Grotesk", sans-serif', fontSize: "1.8rem" }}>Jump straight to the good stuff</h2>
+                                <p className="muted" style={{ marginTop: 8 }}>
+                                    Search by show name, episode tag, release group, or narrow the whole wall to one source chat.
+                                </p>
+                                <div className="view-toggle">
+                                    <a className={`view-pill ${initialData.view_mode === "wall" ? "is-active" : ""}`} href={initialData.wall_view_url}>Wall View</a>
+                                    <a className={`view-pill ${initialData.view_mode === "files" ? "is-active" : ""}`} href={initialData.files_view_url}>Explorer View</a>
+                                </div>
+                            </div>
+                            <div className="surface-stats">
+                                <span className="chip">{initialData.view_mode === "files" ? `${initialData.total_files} files` : `${initialData.total_groups} titles`}</span>
+                                <span className="chip">{initialData.total_files} files</span>
+                                <span className="chip">{selection.length} selected</span>
+                                <span className="chip">{initialData.tracked_sources.length} tracked sources</span>
+                                {initialData.view_mode === "wall" && initialData.confidence_filter !== "all" ? <span className="chip">Match: {initialData.confidence_filter}</span> : null}
+                                {initialData.view_mode === "files" && initialData.sort_mode !== "newest" ? <span className="chip">Sort: {initialData.sort_mode}</span> : null}
+                            </div>
+                        </div>
+                        <form className="search-form" method="get" action="/admin">
+                            <input type="text" name="q" defaultValue={initialData.search_query} placeholder="Search titles, seasons, release groups" />
+                            <select name="source" defaultValue={initialData.active_source_chat_id}>
+                                {initialData.source_options.map((source) => (
+                                    <option key={source.chat_id} value={source.chat_id}>
+                                        {source.chat_title} ({source.count})
+                                    </option>
+                                ))}
+                            </select>
+                            <select name="view" defaultValue={initialData.view_mode}>
+                                <option value="wall">Wall View</option>
+                                <option value="files">Explorer View</option>
+                            </select>
+                            <select name="per_page" defaultValue={String(initialData.per_page)}>
+                                {initialData.per_page_options.map((value) => (
+                                    <option key={value} value={value}>{value} / page</option>
+                                ))}
+                            </select>
+                            {initialData.view_mode === "wall" ? (
+                                <select name="match" defaultValue={initialData.confidence_filter}>
+                                    {initialData.confidence_options.map((option) => (
+                                        <option key={option.value} value={option.value}>{option.label}</option>
+                                    ))}
+                                </select>
+                            ) : (
+                                <select name="sort" defaultValue={initialData.sort_mode}>
+                                    {initialData.sort_options.map((option) => (
+                                        <option key={option.value} value={option.value}>{option.label}</option>
+                                    ))}
+                                </select>
+                            )}
+                            <button className="button" type="submit">Search</button>
+                            <a className="ghost" href="/admin">Reset</a>
+                        </form>
+                    </section>
+
+                    <div className={`status-line ${status.mode === "success" ? "is-success" : status.mode === "error" ? "is-error" : ""}`} style={{ marginTop: 14 }}>
+                        {status.message}
+                    </div>
+
+                    <section className="library-section" id="library">
+                        <div className="section-head">
+                            <div className="section-copy">
+                                <div className="section-kicker">Library Wall</div>
+                                <h2>{isExplorerView ? "Explorer mode for ugly real files" : "Strong matches first, weaker matches pushed down"}</h2>
+                                <p className="muted">
+                                    {isExplorerView
+                                        ? "Browse the raw filtered files directly, select many at once, and stop depending on perfect metadata."
+                                        : "The first poster wall is now strict Strong Match only. Meta matches and filename-only groups live in lower shelves instead of crowding the homepage."}
+                                </p>
+                            </div>
+                            <div className="selection-actions">
+                                <span className="chip">{selection.length} selected</span>
+                                <button className="ghost" type="button" onClick={toggleVisible}>
+                                    {isExplorerView ? "Toggle Visible Files" : "Toggle Visible Titles"}
+                                </button>
+                                <button className="ghost" type="button" onClick={() => copyText(visibleLinks, "Visible page links copied.")}>Copy Visible Links</button>
+                            </div>
+                        </div>
+
+                        {isExplorerView ? (
+                            fileRows.length ? (
+                                <div className="file-browser">
+                                    <div className="browser-toolbar">
+                                        <div className="muted">
+                                            Showing {fileRows.length} files on this page. Use bigger page sizes when the metadata is messy and you just want the actual files.
+                                        </div>
+                                        <div className="selection-actions">
+                                            <button className="ghost" type="button" onClick={toggleVisible}>Toggle This Page</button>
+                                        </div>
+                                    </div>
+                                    {fileRows.map((file) => (
+                                        <div className="browser-row" key={file.id}>
+                                            <input className="checkbox" type="checkbox" checked={hasSelected(file.id)} onChange={() => toggleFile(file.id)} />
+                                            <div className="browser-main">
+                                                <strong>{file.name}</strong>
+                                                <span>{file.parsed_title}</span>
+                                            </div>
+                                            <div className="browser-meta">
+                                                <strong>{formatParsedMeta(file)}</strong>
+                                                <span>{file.source_title} · {file.size}</span>
+                                            </div>
+                                            <div className="browser-actions">
+                                                <span className={`confidence-chip ${file.confidence || "filename"}`}>{formatConfidence(file.confidence)}</span>
+                                                <a className="tiny" href={file.download_url} target="_blank" rel="noopener">Direct Link</a>
+                                                <a className="tiny" href={file.watch_url} target="_blank" rel="noopener">Watch Page</a>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="empty-state">No files matched this view yet. Try another search, another source, or switch back to wall mode.</div>
+                            )
+                        ) : primaryWallGroups.length ? (
+                            <div className="media-grid">
+                                {primaryWallGroups.map((group) => {
+                                    const selectedCount = group.files.filter((file) => selection.includes(file.id)).length;
+                                    const seasons = seasonCount(group.files);
+                                    const image = group.poster_url || group.backdrop_url || "";
+                                    return (
+                                        <article
+                                            key={group.key}
+                                            className="media-card"
+                                            style={image ? { backgroundImage: `linear-gradient(180deg, rgba(5, 7, 12, 0.08) 18%, rgba(5, 7, 12, 0.94) 78%), linear-gradient(180deg, rgba(239, 79, 61, 0.14), rgba(8, 12, 20, 0.18)), url('${image}')` } : undefined}
+                                            onClick={() => setActiveGroupKey(group.key)}
+                                        >
+                                            <div className="media-card-top">
+                                                <div className="media-badges">
+                                                    {group.release_year ? <span className="chip">{group.release_year}</span> : null}
+                                                    <span className="chip">{group.media_kind.toUpperCase()}</span>
+                                                    {group.locked ? <span className="chip">{formatLockMode(group.lock_mode, group.locked)}</span> : null}
+                                                </div>
+                                                {selectedCount ? <span className="chip">{selectedCount} selected</span> : null}
+                                            </div>
+                                            <div className="media-content">
+                                                <h3 className="media-title">{group.display_title}</h3>
+                                                {group.overview ? <p className="media-description">{group.overview}</p> : null}
+                                                <div className="media-footer">
+                                                    <div>
+                                                        <small>{group.count} files · {group.total_size}</small>
+                                                        <small>{seasons ? `${seasons} seasons` : "Single title"} · {group.source_titles.slice(0, 2).join(" · ")}</small>
+                                                    </div>
+                                                    <span className={`confidence-chip ${group.confidence || "filename"}`}>{formatConfidence(group.confidence)}</span>
+                                                    <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                                                        <button className="tiny" type="button" onClick={() => setActiveGroupKey(group.key)}>Open</button>
+                                                        <button className="tiny" type="button" onClick={() => selectGroup(group.files.map((file) => file.id))}>Select</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <div className="empty-state">No strong matches are visible in this result set yet. Use Explorer View for raw files, or open the lower shelves for weaker matches.</div>
+                        )}
+
+                        {!isExplorerView && secondaryMetaGroups.length ? (
+                            <details className="raw-shelf panel">
+                                <summary>
+                                    <div>
+                                        <div className="section-kicker">Meta Match Shelf</div>
+                                        <strong>{secondaryMetaGroups.length} weaker TMDb matches are parked here</strong>
+                                    </div>
+                                    <span className="chip">Open meta matches</span>
+                                </summary>
+                                <div className="raw-shelf-body">
+                                    <div className="media-grid">
+                                        {secondaryMetaGroups.map((group) => {
+                                            const selectedCount = group.files.filter((file) => selection.includes(file.id)).length;
+                                            const image = group.poster_url || group.backdrop_url || "";
+                                            return (
+                                                <article
+                                                    key={`meta-${group.key}`}
+                                                    className="media-card"
+                                                    style={image ? { backgroundImage: `linear-gradient(180deg, rgba(5, 7, 12, 0.04) 12%, rgba(5, 7, 12, 0.86) 76%), linear-gradient(180deg, rgba(239, 79, 61, 0.10), rgba(8, 12, 20, 0.08)), url('${image}')` } : undefined}
+                                                    onClick={() => setActiveGroupKey(group.key)}
+                                                >
+                                                    <div className="media-card-top">
+                                                        <div className="media-badges">
+                                                            {group.release_year ? <span className="chip">{group.release_year}</span> : null}
+                                                            <span className="chip">{group.media_kind.toUpperCase()}</span>
+                                                        </div>
+                                                        {selectedCount ? <span className="chip">{selectedCount} selected</span> : null}
+                                                    </div>
+                                                    <div className="media-content">
+                                                        <h3 className="media-title">{group.display_title}</h3>
+                                                        {group.overview ? <p className="media-description">{group.overview}</p> : null}
+                                                        <div className="media-footer">
+                                                            <div>
+                                                                <small>{group.count} files · {group.total_size}</small>
+                                                                <small>{group.source_titles.slice(0, 2).join(" · ")}</small>
+                                                            </div>
+                                                            <span className={`confidence-chip ${group.confidence || "filename"}`}>{formatConfidence(group.confidence)}</span>
+                                                            <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                                                                <button className="tiny" type="button" onClick={() => setActiveGroupKey(group.key)}>Open</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </article>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </details>
+                        ) : null}
+
+                        {!isExplorerView && secondaryFilenameGroups.length ? (
+                            <details className="raw-shelf panel">
+                                <summary>
+                                    <div>
+                                        <div className="section-kicker">Unmatched Shelf</div>
+                                        <strong>{secondaryFilenameGroups.length} raw titles need cleaner matching</strong>
+                                    </div>
+                                    <span className="chip">Open raw groups</span>
+                                </summary>
+                                <div className="raw-shelf-body">
+                                    <div className="media-grid">
+                                        {secondaryFilenameGroups.map((group) => {
+                                            const selectedCount = group.files.filter((file) => selection.includes(file.id)).length;
+                                            return (
+                                                <article
+                                                    key={group.key}
+                                                    className="media-card"
+                                                    onClick={() => setActiveGroupKey(group.key)}
+                                                >
+                                                    <div className="media-card-top">
+                                                        <div className="media-badges">
+                                                            <span className="chip">{group.media_kind.toUpperCase()}</span>
+                                                            {group.locked ? <span className="chip">{formatLockMode(group.lock_mode, group.locked)}</span> : null}
+                                                        </div>
+                                                        {selectedCount ? <span className="chip">{selectedCount} selected</span> : null}
+                                                    </div>
+                                                    <div className="media-content">
+                                                        <h3 className="media-title">{group.display_title}</h3>
+                                                        <div className="media-footer">
+                                                            <div>
+                                                                <small>{group.count} files · {group.total_size}</small>
+                                                                <small>{group.source_titles.slice(0, 2).join(" · ")}</small>
+                                                            </div>
+                                                            <span className={`confidence-chip ${group.confidence || "filename"}`}>{formatConfidence(group.confidence)}</span>
+                                                            <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                                                                <button className="tiny" type="button" onClick={() => setActiveGroupKey(group.key)}>Open</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </article>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </details>
+                        ) : null}
+                    </section>
+
+                    <section className="workspace-section" id="workspace">
+                        <div className="section-head">
+                            <div className="section-copy">
+                                <div className="section-kicker">Workspace</div>
+                                <h2>Playlist tools and source controls</h2>
+                                <p className="muted">The homepage stays focused on browsing. These controls are still here when you need them.</p>
+                            </div>
+                        </div>
+                        <div className="workspace-grid" style={{ gridTemplateColumns: "repeat(4, minmax(0, 1fr))" }}>
+                            <details className="workspace-card panel" open>
+                                <summary>
+                                    <div>
+                                        <div className="section-kicker">Playlist Builder</div>
+                                        <strong>Build one player link</strong>
+                                    </div>
+                                    <span className="chip">{selection.length} selected</span>
+                                </summary>
+                                <div className="workspace-body">
+                                    <div className="toolbar-stack">
+                                        <div className="field">
+                                            <label htmlFor="playlist-title">Playlist title</label>
+                                            <input id="playlist-title" value={playlistTitle} onChange={(e) => setPlaylistTitle(e.target.value)} placeholder="Weekend watchlist" />
+                                        </div>
+                                        <div className="toolbar-actions">
+                                            <button className="button" type="button" onClick={createPlaylist}>Create Playlist Link</button>
+                                            <button className="ghost" type="button" onClick={createTelegramBundle}>Get in Telegram</button>
+                                            <button className="ghost" type="button" onClick={toggleVisible}>Toggle Visible</button>
+                                            <button className="ghost" type="button" onClick={() => { setSelection([]); setPlaylistUrl(""); setTelegramBundleUrl(""); setStatus({ message: "Selection cleared.", mode: "success" }); }}>Clear</button>
+                                        </div>
+                                        {playlistUrl ? (
+                                            <div className="inline-panel">
+                                                <div className="section-kicker">Playlist Ready</div>
+                                                <textarea readOnly value={playlistUrl} style={{ marginTop: 10 }} />
+                                                <div className="toolbar-actions" style={{ marginTop: 10 }}>
+                                                    <button className="ghost" type="button" onClick={() => copyText(playlistUrl, "Playlist URL copied.")}>Copy Playlist URL</button>
+                                                    <a className="ghost" href={playlistUrl} target="_blank" rel="noopener">Open Playlist</a>
+                                                </div>
+                                            </div>
+                                        ) : null}
+                                        {telegramBundleUrl ? (
+                                            <div className="inline-panel">
+                                                <div className="section-kicker">Telegram Bundle Ready</div>
+                                                <textarea readOnly value={telegramBundleUrl} style={{ marginTop: 10 }} />
+                                                <div className="toolbar-actions" style={{ marginTop: 10 }}>
+                                                    <button className="ghost" type="button" onClick={() => copyText(telegramBundleUrl, "Telegram bundle link copied.")}>Copy Telegram Link</button>
+                                                    <a className="ghost" href={telegramBundleUrl} target="_blank" rel="noopener">Open in Bot</a>
+                                                </div>
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                </div>
+                            </details>
+
+                            <details className="workspace-card panel" id="scanner">
+                                <summary>
+                                    <div>
+                                        <div className="section-kicker">Automation</div>
+                                        <strong>Scan and auto-sync</strong>
+                                    </div>
+                                    <span className="chip">{initialData.tracked_sources.length} tracked</span>
+                                </summary>
+                                <div className="workspace-body">
+                                    <div className="toolbar-stack">
+                                        <div className="field">
+                                            <label htmlFor="scan-chat-id">Source chat ID</label>
+                                            <input id="scan-chat-id" value={scanChatId} onChange={(e) => setScanChatId(e.target.value)} placeholder="-1001700323528" />
+                                        </div>
+                                        <div className="toolbar-actions">
+                                            <button className="button" type="button" onClick={() => startScan(false)}>Sync New Only</button>
+                                            <button className="ghost" type="button" onClick={() => startScan(true)}>Full Rescan</button>
+                                            <button className="ghost" type="button" onClick={refreshScan}>Refresh</button>
+                                        </div>
+                                        <div className="inline-panel scan-panel">
+                                            <div className="section-kicker">Scanner Status</div>
+                                            <div className="scan-progress-track" aria-label="Scan progress">
+                                                <div
+                                                    className={`scan-progress-fill ${scanProgress.indeterminate ? "is-live" : ""}`}
+                                                    style={{ width: `${scanProgress.percent}%` }}
+                                                />
+                                            </div>
+                                            <div className="scan-meta">
+                                                <div>
+                                                    <strong>{scanProgress.headline}</strong>
+                                                    <p className="muted" style={{ marginTop: 6 }}>{scanProgress.detail}</p>
+                                                </div>
+                                                {scanStatus?.chat_id ? (
+                                                    <div className="chip">
+                                                        {scanStatus.running ? "Live sync" : "Latest run"} · {scanStatus.chat_title || scanStatus.chat_id}
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                            <div className="scan-stats">
+                                                <div className="scan-stat">
+                                                    <div className="section-kicker">Messages Seen</div>
+                                                    <strong>{formatNumber(scanStatus?.scanned_messages)}</strong>
+                                                </div>
+                                                <div className="scan-stat">
+                                                    <div className="section-kicker">Video Matches</div>
+                                                    <strong>{formatNumber(scanStatus?.matched_videos)}</strong>
+                                                </div>
+                                                <div className="scan-stat">
+                                                    <div className="section-kicker">Imported</div>
+                                                    <strong>{formatNumber(scanStatus?.imported_files)}</strong>
+                                                </div>
+                                                <div className="scan-stat">
+                                                    <div className="section-kicker">Duplicates</div>
+                                                    <strong>{formatNumber(scanStatus?.duplicate_files)}</strong>
+                                                </div>
+                                            </div>
+                                            <div className="scan-last-file">
+                                                <strong>{describeScanStatus(scanStatus)}</strong>
+                                                <span>{scanStatus?.last_file_name || "Latest matched file will appear here during the run."}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </details>
+
+                            <details className="workspace-card panel" id="sources">
+                                <summary>
+                                    <div>
+                                        <div className="section-kicker">Tracked Sources</div>
+                                        <strong>Library source chats</strong>
+                                    </div>
+                                    <span className="chip">{initialData.tracked_sources.length}</span>
+                                </summary>
+                                <div className="workspace-body">
+                                    <div className="sources-list">
+                                        {initialData.tracked_sources.length ? initialData.tracked_sources.map((source) => (
+                                            <div className="source-row" key={source.chat_id}>
+                                                <strong>{source.chat_title}</strong>
+                                                <div className="muted">chat {source.chat_id}</div>
+                                                <div className="muted">last sync {source.last_synced_at}</div>
+                                            </div>
+                                        )) : (
+                                            <div className="source-row">
+                                                <strong>No tracked sources yet</strong>
+                                                <div className="muted">Run the first scan and they will appear here.</div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </details>
+
+                            <details className="workspace-card panel" id="admin-users">
+                                <summary>
+                                    <div>
+                                        <div className="section-kicker">Website Users</div>
+                                        <strong>Create and delete admin logins</strong>
+                                    </div>
+                                    <span className="chip">{adminUsers.length}</span>
+                                </summary>
+                                <div className="workspace-body">
+                                    <div className="toolbar-stack">
+                                        <div className="field">
+                                            <label htmlFor="new-admin-username">New username</label>
+                                            <input id="new-admin-username" value={newAdminUsername} onChange={(e) => setNewAdminUsername(e.target.value)} placeholder="mhjoygamershub" />
+                                        </div>
+                                        <div className="field">
+                                            <label htmlFor="new-admin-password">New password</label>
+                                            <input id="new-admin-password" type="password" value={newAdminPassword} onChange={(e) => setNewAdminPassword(e.target.value)} placeholder="Create a password" />
+                                        </div>
+                                        <div className="toolbar-actions">
+                                            <button className="button" type="button" onClick={createAdminUser}>Add Website User</button>
+                                            <button className="ghost" type="button" onClick={refreshAdminUsers}>Refresh Users</button>
+                                        </div>
+                                        <div className="admin-users-list">
+                                            {adminUsers.length ? adminUsers.map((user) => (
+                                                <div className="admin-user-row" key={`${user.source}-${user.username}`}>
+                                                    <div className="admin-user-copy">
+                                                        <strong>{user.username}</strong>
+                                                        <span>
+                                                            {user.source === "env" ? "Protected server login" : "Panel-managed website user"}
+                                                            {user.created_by ? ` · created by ${user.created_by}` : ""}
+                                                        </span>
+                                                    </div>
+                                                    <div className="toolbar-actions">
+                                                        <span className="chip">{user.source}</span>
+                                                        {user.protected ? (
+                                                            <span className="chip">Protected</span>
+                                                        ) : (
+                                                            <button className="ghost" type="button" onClick={() => deleteAdminUser(user.username)}>Delete</button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )) : (
+                                                <div className="source-row">
+                                                    <strong>No website users yet</strong>
+                                                    <div className="muted">Create extra admin logins here without touching the server env.</div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                    </section>
+
+                    <section className="pagination panel">
+                        <div className="muted">
+                            Page {initialData.current_page} of {initialData.total_pages}. {isExplorerView
+                                ? "Explorer mode shows the raw filtered files directly so messy metadata does not trap you in tiny poster pages."
+                                : "Keep the library wall clean, then build a playlist only from the titles you actually want."}
+                        </div>
+                        <div className="toolbar-actions">
+                            {initialData.prev_page_url ? <a className="ghost" href={initialData.prev_page_url}>Previous</a> : null}
+                            {initialData.next_page_url ? <a className="ghost" href={initialData.next_page_url}>Next</a> : null}
+                        </div>
+                    </section>
+
+                    {selection.length ? (
+                        <section className="selection-bar">
+                            <div className="selection-summary">
+                                <strong>{selection.length} files ready</strong>
+                                <p className="muted">Your selection stays saved while you browse pages and sources.</p>
+                            </div>
+                            <div className="selection-actions">
+                                <button className="button" type="button" onClick={createPlaylist}>Create Playlist Link</button>
+                                <button className="ghost" type="button" onClick={createTelegramBundle}>Get in Telegram</button>
+                                <button className="ghost" type="button" onClick={() => { setSelection([]); setPlaylistUrl(""); setTelegramBundleUrl(""); }}>Clear Selection</button>
+                            </div>
+                        </section>
+                    ) : null}
+
+                    {selection.length ? (
+                        <details className="selection-cart panel" open>
+                            <summary>
+                                <div>
+                                    <div className="section-kicker">Playlist Cart</div>
+                                    <strong>Review and reorder the files in your current playlist</strong>
+                                </div>
+                                <span className="chip">{visibleSelectionItems.length} visible here</span>
+                            </summary>
+                            <div className="selection-cart-body">
+                                {visibleSelectionItems.length ? visibleSelectionItems.map((item, index) => (
+                                    <div className="cart-row" key={item.id}>
+                                        <div className="cart-copy">
+                                            <strong>{index + 1}. {item.label}</strong>
+                                            <span>{item.sublabel}</span>
+                                        </div>
+                                        <div className="cart-actions">
+                                            <span className={`confidence-chip ${item.confidence || "filename"}`}>{formatConfidence(item.confidence)}</span>
+                                            <button className="tiny" type="button" onClick={() => moveSelection(item.id, -1)}>Up</button>
+                                            <button className="tiny" type="button" onClick={() => moveSelection(item.id, 1)}>Down</button>
+                                            <button className="tiny" type="button" onClick={() => toggleFile(item.id)}>Remove</button>
+                                        </div>
+                                    </div>
+                                )) : (
+                                    <div className="empty-state">Your selected files are on other pages right now. They still stay in the playlist cart.</div>
+                                )}
+                                {hiddenSelectionCount > 0 ? (
+                                    <div className="inline-panel">
+                                        <div className="section-kicker">Hidden Selection</div>
+                                        <p className="muted" style={{ marginTop: 8 }}>
+                                            {hiddenSelectionCount} selected files are currently on other pages or views. They will still be included in the playlist.
+                                        </p>
+                                    </div>
+                                ) : null}
+                            </div>
+                        </details>
+                    ) : null}
+
+                    {activeGroup ? (
+                        <div className="modal-shell" onClick={() => setActiveGroupKey("")}>
+                            <div className="modal-card" onClick={(event) => event.stopPropagation()}>
+                                <div
+                                    className="modal-hero"
+                                    style={activeGroup.backdrop_url ? { backgroundImage: `linear-gradient(90deg, rgba(5, 7, 12, 0.96) 0%, rgba(5, 7, 12, 0.72) 48%, rgba(5, 7, 12, 0.32) 100%), linear-gradient(180deg, rgba(239, 79, 61, 0.12), rgba(5, 7, 12, 0.22)), url('${activeGroup.backdrop_url}')` } : undefined}
+                                >
+                                    <button className="ghost modal-close" type="button" onClick={() => setActiveGroupKey("")}>Close</button>
+                                    <div className="modal-hero-inner">
+                                        <div
+                                            className="modal-poster"
+                                            style={activeGroup.poster_url ? { backgroundImage: `url('${activeGroup.poster_url}')` } : undefined}
+                                        />
+                                        <div>
+                                            <div className="section-kicker">Title Details</div>
+                                            <h2 style={{ marginTop: 10 }}>{activeGroup.display_title}</h2>
+                                            <p className="muted" style={{ marginTop: 10 }}>{activeGroup.overview || "This title has no TMDb overview yet, but the direct Telegram files are ready to use."}</p>
+                                            <div className="hero-meta" style={{ marginTop: 14 }}>
+                                                {activeGroup.release_year ? <span className="chip">{activeGroup.release_year}</span> : null}
+                                                <span className="chip">{activeGroup.media_kind.toUpperCase()}</span>
+                                                <span className="chip">{activeGroup.count} files</span>
+                                                <span className="chip">{activeGroup.total_size}</span>
+                                                <span className="chip">{activeSelectionCount} selected</span>
+                                                <span className="chip">{formatLockMode(activeGroup.lock_mode, activeGroup.locked)}</span>
+                                                {activeGroup.tmdb_id ? <span className="chip">TMDb {activeGroup.tmdb_id}</span> : null}
+                                            </div>
+                                            <div className="modal-actions" style={{ marginTop: 18 }}>
+                                                <button className="button" type="button" onClick={() => selectGroup(activeGroup.files.map((file) => file.id))}>Select Full Title</button>
+                                                <button className="ghost" type="button" onClick={() => createPlaylistForIds(activeSelectedIds, activeGroup.display_title)}>Create M3U From Selected ({activeSelectionCount})</button>
+                                                <button className="ghost" type="button" onClick={() => createTelegramBundleForIds(activeSelectedIds, activeGroup.display_title)}>Get Selected in Telegram ({activeSelectionCount})</button>
+                                                <button className="ghost" type="button" onClick={() => createPlaylistForIds(activeGroup.files.map((file) => file.id), activeGroup.display_title)}>Create M3U From Full Title ({activeGroup.files.length})</button>
+                                                <button className="ghost" type="button" onClick={() => removeGroup(activeGroup.files.map((file) => file.id))}>Remove Title</button>
+                                                <button className="ghost" type="button" onClick={() => setFixMatchOpen((current) => !current)}>Fix Match</button>
+                                                <a className="ghost" href={activeGroup.files[0]?.download_url} target="_blank" rel="noopener">Open First Direct Link</a>
+                                            </div>
+                                            {fixMatchOpen ? (
+                                                <div className="fix-match-panel">
+                                                    <div className="section-kicker">Repair Match</div>
+                                                    <p className="muted" style={{ marginTop: 0 }}>
+                                                        Current source: {formatLockMode(activeGroup.lock_mode, activeGroup.locked)}
+                                                        {activeGroup.tmdb_id ? ` · TMDb ${activeGroup.tmdb_id}` : ""}
+                                                    </p>
+                                                    <input value={fixMatchQuery} onChange={(event) => setFixMatchQuery(event.target.value)} placeholder="Search TMDb title" />
+                                                    <input value={fixMatchTmdbId} onChange={(event) => setFixMatchTmdbId(event.target.value)} placeholder="Or paste exact TMDb ID" />
+                                                    <div className="toolbar-actions">
+                                                        <button className="button" type="button" onClick={searchFixMatches}>{fixMatchLoading ? "Searching..." : "Search TMDb"}</button>
+                                                        <button className="ghost" type="button" onClick={lookupFixMatchById}>Lookup TMDb ID</button>
+                                                        <button className="ghost" type="button" onClick={useFilenameOnly}>Lock To Filename</button>
+                                                        {activeGroup.locked ? <button className="ghost" type="button" onClick={clearManualLock}>Clear Manual Lock</button> : null}
+                                                    </div>
+                                                    {fixMatchResults.length ? (
+                                                        <div className="match-results">
+                                                            {fixMatchResults.map((result, index) => (
+                                                                <div className="match-result" key={`${result.tmdb_id || "raw"}-${index}`}>
+                                                                    <strong>{result.title}{result.release_year ? ` (${result.release_year})` : ""}</strong>
+                                                                    {result.tmdb_id ? <span>TMDb ID: {result.tmdb_id}</span> : null}
+                                                                    <span>{result.overview || "No overview available."}</span>
+                                                                    <div className="toolbar-actions" style={{ marginTop: 10 }}>
+                                                                        <button className="tiny" type="button" onClick={() => applyFixMatch(result)}>Apply + Lock</button>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <p className="muted">Search the correct TMDb title, paste an exact TMDb ID, or keep this group in filename-only mode. Locked mappings always win over auto-match until you clear them.</p>
+                                                    )}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="modal-content">
+                                    <div className="section-kicker">Files</div>
+                                    <h2 style={{ marginTop: 10 }}>Episodes and direct links</h2>
+                                    <div className="modal-toolbar">
+                                        <div className="inline-panel">
+                                            <div className="section-kicker">Title Playlist</div>
+                                            <p className="muted" style={{ marginTop: 8 }}>
+                                                Select the exact episodes you want here, then generate the `.m3u` link without leaving this title view.
+                                            </p>
+                                            {playlistUrl ? (
+                                                <input
+                                                    className="copy-field"
+                                                    readOnly
+                                                    value={playlistUrl}
+                                                    onFocus={(event) => event.target.select()}
+                                                    style={{ marginTop: 12 }}
+                                                />
+                                            ) : null}
+                                            <div className="toolbar-actions" style={{ marginTop: 12 }}>
+                                                <button className="button" type="button" onClick={() => createPlaylistForIds(activeSelectedIds, activeGroup.display_title)}>Create M3U From Selected ({activeSelectionCount})</button>
+                                                <button className="ghost" type="button" onClick={() => createTelegramBundleForIds(activeSelectedIds, activeGroup.display_title)}>Get Selected in Telegram ({activeSelectionCount})</button>
+                                                <button className="ghost" type="button" onClick={() => createPlaylistForIds(activeGroup.files.map((file) => file.id), activeGroup.display_title)}>Whole Title M3U ({activeGroup.files.length})</button>
+                                                {playlistUrl ? <button className="ghost" type="button" onClick={() => copyText(playlistUrl, "Playlist URL copied.")}>Copy Last M3U</button> : null}
+                                                {playlistUrl ? <a className="ghost" href={playlistUrl} target="_blank" rel="noopener">Open Last M3U</a> : null}
+                                            </div>
+                                            {telegramBundleUrl ? (
+                                                <input
+                                                    className="copy-field"
+                                                    readOnly
+                                                    value={telegramBundleUrl}
+                                                    onFocus={(event) => event.target.select()}
+                                                    style={{ marginTop: 12 }}
+                                                />
+                                            ) : null}
+                                            {telegramBundleUrl ? (
+                                                <div className="toolbar-actions" style={{ marginTop: 10 }}>
+                                                    <button className="ghost" type="button" onClick={() => copyText(telegramBundleUrl, "Telegram bundle link copied.")}>Copy Telegram Link</button>
+                                                    <a className="ghost" href={telegramBundleUrl} target="_blank" rel="noopener">Open in Bot</a>
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                        <div className="inline-panel filter-panel">
+                                            <div className="section-kicker">Quick Quality Filter</div>
+                                            <p className="muted" style={{ marginTop: 8 }}>
+                                                Filter this title by release quality, then select or build one M3U just from that filtered set.
+                                            </p>
+                                            <div className="filter-chips">
+                                                <button
+                                                    className={`filter-chip ${activeQualityFilter === "all" ? "is-active" : ""}`}
+                                                    type="button"
+                                                    onClick={() => setActiveQualityFilter("all")}
+                                                >
+                                                    All Files
+                                                    <span className="chip">{activeGroup.files.length}</span>
+                                                </button>
+                                                {activeQualityOptions.map((quality) => {
+                                                    const count = activeGroup.files.filter((file) => detectQualityTag(file.name) === quality).length;
+                                                    return (
+                                                        <button
+                                                            key={quality}
+                                                            className={`filter-chip ${activeQualityFilter === quality ? "is-active" : ""}`}
+                                                            type="button"
+                                                            onClick={() => setActiveQualityFilter(quality)}
+                                                        >
+                                                            {quality}
+                                                            <span className="chip">{count}</span>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                            <div className="toolbar-actions">
+                                                <span className="chip">{activeFilteredFiles.length} filtered files</span>
+                                                <span className="chip">{activeFilteredSelectionCount} selected from filter</span>
+                                                {activeFilteredSelectionCount ? (
+                                                    <button className="button" type="button" onClick={() => createPlaylistForIds(activeFilteredSelectedIds, `${activeGroup.display_title} ${activeQualityFilter === "all" ? "Selected Files" : `${activeQualityFilter} Selected`}`)}>
+                                                        M3U From Selected Filter ({activeFilteredSelectionCount})
+                                                    </button>
+                                                ) : null}
+                                                {activeFilteredSelectionCount ? (
+                                                    <button className="ghost" type="button" onClick={() => createTelegramBundleForIds(activeFilteredSelectedIds, `${activeGroup.display_title} ${activeQualityFilter === "all" ? "Selected Files" : `${activeQualityFilter} Selected`}`)}>
+                                                        Telegram From Selected ({activeFilteredSelectionCount})
+                                                    </button>
+                                                ) : null}
+                                                <button className={activeFilteredSelectionCount ? "ghost" : "button"} type="button" onClick={() => createPlaylistForIds(activeFilteredIds, `${activeGroup.display_title} ${activeQualityFilter === "all" ? "All Files" : activeQualityFilter}`)}>
+                                                    {activeQualityFilter === "all"
+                                                        ? `M3U From All ${activeFilteredIds.length} Files`
+                                                        : `M3U From ${activeQualityFilter} (${activeFilteredIds.length})`}
+                                                </button>
+                                                <button className="ghost" type="button" onClick={() => createTelegramBundleForIds(activeFilteredIds, `${activeGroup.display_title} ${activeQualityFilter === "all" ? "All Files" : activeQualityFilter}`)}>
+                                                    {activeQualityFilter === "all"
+                                                        ? `Telegram From All ${activeFilteredIds.length} Files`
+                                                        : `Telegram From ${activeQualityFilter} (${activeFilteredIds.length})`}
+                                                </button>
+                                                <button className="ghost" type="button" onClick={selectFilteredGroupFiles}>Select Filtered</button>
+                                                <button className="ghost" type="button" onClick={clearFilteredGroupFiles}>Clear Filtered</button>
+                                            </div>
+                                            {activeFilteredSelectionCount && activeFilteredIds.length !== activeFilteredSelectionCount ? (
+                                                <p className="muted" style={{ marginTop: 10 }}>
+                                                    The checked-file playlist uses only your {activeFilteredSelectionCount} selected files. The other filter button includes all {activeFilteredIds.length} files in the current filter.
+                                                </p>
+                                            ) : null}
+                                        </div>
+                                    </div>
+                                    <div className="files-grid">
+                                        {activeBuckets.map((bucket) => (
+                                            <React.Fragment key={bucket.key}>
+                                                {bucket.files.length > 1 ? (
+                                                    <div className="inline-panel">
+                                                        <div className="section-kicker">Variant Group</div>
+                                                        <p className="muted" style={{ marginTop: 8 }}>
+                                                            {bucket.label} has {bucket.files.length} variants. Pick the exact release you want in the playlist.
+                                                        </p>
+                                                    </div>
+                                                ) : null}
+                                                {bucket.files.map((file) => (
+                                                    <div className="file-row" key={file.id}>
+                                                        <input className="checkbox" type="checkbox" checked={hasSelected(file.id)} onChange={() => toggleFile(file.id)} />
+                                                        <div className="file-copy">
+                                                            <strong>{formatEpisodeLabel(file)}</strong>
+                                                            <span>{file.name}</span>
+                                                        </div>
+                                                        <div className="file-actions">
+                                                            <span className="chip">{detectQualityTag(file.name)}</span>
+                                                            <span className="chip">{file.size}</span>
+                                                            <a className="tiny" href={file.download_url} target="_blank" rel="noopener">Direct Link</a>
+                                                            <a className="tiny" href={file.watch_url} target="_blank" rel="noopener">Watch Page</a>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </React.Fragment>
+                                        ))}
+                                        {!activeBuckets.length ? (
+                                            <div className="empty-state">No files matched this quality filter inside the title.</div>
+                                        ) : null}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : null}
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+        {% endraw %}
+    </script>
+</body>
+</html>

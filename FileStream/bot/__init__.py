@@ -20,6 +20,17 @@ FileStream = Client(
     no_updates=no_updates
 )
 
+LibraryScannerClient = None
+if Telegram.USER_SESSION_STRING:
+    LibraryScannerClient = Client(
+        name="FileStreamScanner",
+        api_id=Telegram.API_ID,
+        api_hash=Telegram.API_HASH,
+        session_string=Telegram.USER_SESSION_STRING,
+        sleep_threshold=Telegram.SLEEP_THRESHOLD,
+        no_updates=True,
+        in_memory=True,
+    )
+
 multi_clients = {}
 work_loads = {}
-

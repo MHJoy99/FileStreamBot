@@ -13,6 +13,9 @@ class LANG(object):
 <b>- ᴀᴅᴅ ᴍᴇ ᴀs ᴀɴ ᴀᴅᴍɪɴ ᴏɴ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ</b>
 <b>- sᴇɴᴅ ᴍᴇ ᴀɴʏ ᴅᴏᴄᴜᴍᴇɴᴛ ᴏʀ ᴍᴇᴅɪᴀ</b>
 <b>- ɪ'ʟʟ ᴘʀᴏᴠɪᴅᴇ sᴛʀᴇᴀᴍᴀʙʟᴇ ʟɪɴᴋ</b>
+<b>- /files = browse your saved files</b>
+<b>- /playlist = export all saved links as M3U</b>
+<b>- owner: /admin = open the private web dashboard</b>
 <b>- Powered By @mjoybots 💕</b>\n
 <b>🔞 ᴀᴅᴜʟᴛ ᴄᴏɴᴛᴇɴᴛ sᴛʀɪᴄᴛʟʏ ᴘʀᴏʜɪʙɪᴛᴇᴅ.</b>\n
 <i><b> ʀᴇᴘᴏʀᴛ ʙᴜɢs ᴛᴏ <a href='https://telegram.dog/mhjoy99'>ᴅᴇᴠᴇʟᴏᴘᴇʀ</a></b></i>"""
@@ -38,6 +41,11 @@ class LANG(object):
 <b>📦 Fɪʟᴇ ꜱɪᴢᴇ :</b> <code>{}</code>\n
 <b>📥 Dᴏᴡɴʟᴏᴀᴅ :</b> <code>{}</code>\n
 <b>🔗 Sʜᴀʀᴇ :</b> <code>{}</code>\n"""
+
+    PLAYLIST_TEXT = """
+<b>🎵 M3U playlist ready</b>\n
+<b>Open this file in PotPlayer/VLC to load your saved direct links at once.</b>
+"""
 
 
     BAN_TEXT = "__Sᴏʀʀʏ Sɪʀ, Yᴏᴜ ᴀʀᴇ Bᴀɴɴᴇᴅ ᴛᴏ ᴜsᴇ ᴍᴇ.__\n\n**[Cᴏɴᴛᴀᴄᴛ Dᴇᴠᴇʟᴏᴘᴇʀ](tg://user?id={}) Tʜᴇʏ Wɪʟʟ Hᴇʟᴘ Yᴏᴜ**"

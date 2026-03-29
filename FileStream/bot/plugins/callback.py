@@ -83,6 +83,18 @@ async def cb_data(bot, update: CallbackQuery):
         file_name = myfile['file_name']
         await update.answer(f"Sending File {file_name}")
         await update.message.reply_cached_media(myfile['file_id'], caption=f'**{file_name}**')
+    elif usr_cmd[0] == "sendplaylist":
+        from .start import build_m3u_playlist
+
+        playlist_buffer = await build_m3u_playlist(update.from_user.id)
+        if playlist_buffer is None:
+            await update.answer("No files found", show_alert=True)
+            return
+        await update.answer("Sending playlist")
+        await update.message.reply_document(
+            document=playlist_buffer,
+            caption=LANG.PLAYLIST_TEXT
+        )
     else:
         await update.message.delete()
 
@@ -195,4 +207,3 @@ async def delete_user_filex(_id, update:CallbackQuery):
             caption= "**Fɪʟᴇ Dᴇʟᴇᴛᴇᴅ Sᴜᴄᴄᴇssғᴜʟʟʏ !**\n\n",
             reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data=f"close")]])
         )
-

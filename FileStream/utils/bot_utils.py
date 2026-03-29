@@ -5,7 +5,7 @@ from FileStream.utils.translation import LANG
 from FileStream.utils.database import Database
 from FileStream.utils.human_readable import humanbytes
 from FileStream.config import Telegram, Server
-from FileStream.bot import FileStream
+from FileStream.bot import FileStream, LibraryScannerClient
 import asyncio
 from typing import (
     Union
@@ -167,11 +167,13 @@ async def is_channel_banned(bot, message):
 async def is_user_authorized(message):
     if hasattr(Telegram, 'AUTH_USERS') and Telegram.AUTH_USERS:
         user_id = message.from_user.id
+        allowed_user_ids = set(Telegram.AUTH_USERS)
+        allowed_user_ids.add(Telegram.OWNER_ID)
 
-        if user_id == Telegram.OWNER_ID:
-            return True
+        if LibraryScannerClient and getattr(LibraryScannerClient, "id", None):
+            allowed_user_ids.add(int(LibraryScannerClient.id))
 
-        if not (user_id in Telegram.AUTH_USERS):
+        if user_id not in allowed_user_ids:
             await message.reply_text(
                 text="Yᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀᴜᴛʜᴏʀɪᴢᴇᴅ ᴛᴏ ᴜsᴇ ᴛʜɪs ʙᴏᴛ.",
                 parse_mode=ParseMode.MARKDOWN,

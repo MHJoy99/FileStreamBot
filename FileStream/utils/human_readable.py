@@ -1,6 +1,8 @@
 def humanbytes(size):
-    if not size:
+    if size is None:
         return ""
+    if size == 0:
+        return "0 B"
     power = 2**10
     n = 0
     Dic_powerN = {0: ' ', 1: 'Ki', 2: 'Mi', 3: 'Gi', 4: 'Ti'}

@@ -3,7 +3,7 @@ import logging
 from typing import Dict, Union
 from FileStream.bot import work_loads
 from pyrogram import Client, utils, raw
-from .file_properties import get_file_ids
+from .file_properties import get_file_ids, refresh_client_file_id
 from pyrogram.session import Session, Auth
 from pyrogram.errors import AuthBytesInvalid
 from pyrogram.file_id import FileId, FileType, ThumbnailSource
@@ -14,31 +14,47 @@ class ByteStreamer:
         self.clean_timer = 30 * 60
         self.client: Client = client
         self.cached_file_ids: Dict[str, FileId] = {}
+        self.cache_locks: Dict[str, asyncio.Lock] = {}
         asyncio.create_task(self.clean_cache())
 
-    async def get_file_properties(self, db_id: str, multi_clients) -> FileId:
+    async def get_file_properties(self, db_id: str, multi_clients, force_refresh: bool = False) -> FileId:
         """
         Returns the properties of a media of a specific message in a FIleId class.
         if the properties are cached, then it'll return the cached results.
         or it'll generate the properties from the Message ID and cache them.
         """
+        if force_refresh:
+            self.cached_file_ids.pop(db_id, None)
+
         if not db_id in self.cached_file_ids:
-            logging.debug("Before Calling generate_file_properties")
-            await self.generate_file_properties(db_id, multi_clients)
-            logging.debug(f"Cached file properties for file with ID {db_id}")
+            lock = self.cache_locks.setdefault(db_id, asyncio.Lock())
+            async with lock:
+                if force_refresh or db_id not in self.cached_file_ids:
+                    logging.debug("Before Calling generate_file_properties")
+                    await self.generate_file_properties(db_id, multi_clients, force_refresh=force_refresh)
+                    logging.debug(f"Cached file properties for file with ID {db_id}")
         return self.cached_file_ids[db_id]
     
-    async def generate_file_properties(self, db_id: str, multi_clients) -> FileId:
+    async def generate_file_properties(self, db_id: str, multi_clients, force_refresh: bool = False) -> FileId:
         """
         Generates the properties of a media file on a specific message.
         returns ths properties in a FIleId class.
         """
         logging.debug("Before calling get_file_ids")
-        file_id = await get_file_ids(self.client, db_id, multi_clients, Message)
+        if force_refresh:
+            file_id = await refresh_client_file_id(self.client, db_id, multi_clients, Message)
+        else:
+            file_id = await get_file_ids(self.client, db_id, multi_clients, Message)
+        if not file_id:
+            file_id = await get_file_ids(self.client, db_id, multi_clients, Message)
         logging.debug(f"Generated file ID and Unique ID for file with ID {db_id}")
         self.cached_file_ids[db_id] = file_id
         logging.debug(f"Cached media file with ID {db_id}")
         return self.cached_file_ids[db_id]
+
+    def drop_file_cache(self, db_id: str) -> None:
+        self.cached_file_ids.pop(db_id, None)
+        self.cache_locks.pop(db_id, None)
 
     async def generate_media_session(self, client: Client, file_id: FileId) -> Session:
         """
@@ -167,17 +183,28 @@ class ByteStreamer:
         location = await self.get_location(file_id)
 
         try:
-            r = await media_session.invoke(
-                raw.functions.upload.GetFile(
-                    location=location, offset=offset, limit=chunk_size
-                ),
-            )
+            async def fetch_part(part_offset: int):
+                return await media_session.invoke(
+                    raw.functions.upload.GetFile(
+                        location=location,
+                        offset=part_offset,
+                        limit=chunk_size,
+                        precise=True,
+                    ),
+                )
+
+            r = await fetch_part(offset)
             if isinstance(r, raw.types.upload.File):
                 while True:
                     chunk = r.bytes
                     if not chunk:
                         break
-                    elif part_count == 1:
+
+                    next_task = None
+                    if current_part < part_count:
+                        next_task = asyncio.create_task(fetch_part(offset + chunk_size))
+
+                    if part_count == 1:
                         yield chunk[first_part_cut:last_part_cut]
                     elif current_part == 1:
                         yield chunk[first_part_cut:]
@@ -192,11 +219,10 @@ class ByteStreamer:
                     if current_part > part_count:
                         break
 
-                    r = await media_session.invoke(
-                        raw.functions.upload.GetFile(
-                            location=location, offset=offset, limit=chunk_size
-                        ),
-                    )
+                    if next_task is None:
+                        break
+
+                    r = await next_task
         except (TimeoutError, AttributeError):
             pass
         finally:
@@ -211,4 +237,5 @@ class ByteStreamer:
         while True:
             await asyncio.sleep(self.clean_timer)
             self.cached_file_ids.clear()
+            self.cache_locks.clear()
             logging.debug("Cleaned the cache")

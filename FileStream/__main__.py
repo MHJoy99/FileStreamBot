@@ -3,13 +3,22 @@ import asyncio
 import logging
 import traceback
 import logging.handlers as handlers
+
+try:
+    import uvloop
+except ImportError:
+    uvloop = None
+else:
+    uvloop.install()
+
 from FileStream.config import Telegram, Server
 from aiohttp import web
 from pyrogram import idle
 
-from FileStream.bot import FileStream
+from FileStream.bot import FileStream, LibraryScannerClient
 from FileStream.server import web_server
 from FileStream.bot.clients import initialize_clients
+from FileStream.utils.library_scan import start_auto_sync
 
 logging.basicConfig(
     level=logging.INFO,
@@ -43,6 +52,14 @@ async def start_services():
     FileStream.fname=bot_info.first_name
     print("------------------------------ DONE ------------------------------")
     print()
+    if LibraryScannerClient:
+        print("-------------------- Initializing Scan Client --------------------")
+        await LibraryScannerClient.start()
+        scan_info = await LibraryScannerClient.get_me()
+        LibraryScannerClient.id = scan_info.id
+        print("------------------------------ DONE ------------------------------")
+        print()
+        await start_auto_sync()
     print("---------------------- Initializing Clients ----------------------")
     await initialize_clients()
     print("------------------------------ DONE ------------------------------")
@@ -62,6 +79,8 @@ async def start_services():
 
 async def cleanup():
     await server.cleanup()
+    if LibraryScannerClient:
+        await LibraryScannerClient.stop()
     await FileStream.stop()
 
 if __name__ == "__main__":
