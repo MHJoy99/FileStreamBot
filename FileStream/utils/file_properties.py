@@ -156,9 +156,25 @@ def get_file_info(message):
 async def update_file_id(msg_id, multi_clients):
     file_ids = {}
     for client_id, client in multi_clients.items():
-        log_msg = await client.get_messages(Telegram.FLOG_CHANNEL, msg_id)
-        media = get_media_from_message(log_msg)
-        file_ids[str(client.id)] = getattr(media, "file_id", "")
+        try:
+            log_msg = await client.get_messages(Telegram.FLOG_CHANNEL, msg_id)
+            media = get_media_from_message(log_msg)
+            file_id = getattr(media, "file_id", "")
+            if file_id:
+                file_ids[str(client.id)] = file_id
+            else:
+                logging.warning(
+                    "Client %s could read FLOG message %s but no media file_id was available",
+                    getattr(client, "id", client_id),
+                    msg_id,
+                )
+        except Exception as error:
+            logging.warning(
+                "Skipping client %s while syncing FLOG message %s: %s",
+                getattr(client, "id", client_id),
+                msg_id,
+                error,
+            )
 
     return file_ids
 

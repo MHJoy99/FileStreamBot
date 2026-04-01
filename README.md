@@ -25,14 +25,40 @@
   This bot provides stream links for Telegram files without the necessity of waiting for the download to complete, offering the ability to store files.
 </p>
 
+### ♢ Project Docs :
+
+- [VPS Deployment Guide](./VPS_DEPLOYMENT.md)
+- [Current Setup Notes](./SETUP_NOTES.md)
+- [Admin Website Notes](./ADMIN_WEBSITE_NOTES.md)
+- [Performance Notes](./PERFORMANCE_NOTES.md)
+
+### ♢ Current Project Features :
+
+- Telegram direct links and stream links for uploaded files
+- Private admin website with login and dashboard
+- M3U playlist creation and export from the admin panel
+- Library scanning and tracked-source sync using a user session string
+- Direct HTTP ranged streaming from Telegram through the web server
+
 
 ### ♢ How to Deploy :
 
 <i>Either you could locally host, VPS, or deploy on [Heroku](https://heroku.com)</i>
 
+<p><b>Recommended for a fresh server:</b> follow the <a href="./VPS_DEPLOYMENT.md">VPS Deployment Guide</a>.</p>
+
 #### ♢ Click on This Drop-down and get more details
 
 <br>
+<details>
+  <summary><b>Deploy on VPS (Recommended) :</b></summary>
+
+- Use the repo guide: [VPS_DEPLOYMENT.md](./VPS_DEPLOYMENT.md)
+- This is the current recommended path for a fresh Ubuntu VPS
+- It includes `.env`, `systemd`, firewall, and health-check steps
+
+</details>
+
 <details>
   <summary><b>Deploy on Heroku (Paid)  :</b></summary>
 
@@ -51,8 +77,8 @@
 ```sh
 git clone https://github.com/avipatilpro/FileStreamBot
 cd FileStreamBot
-python3 -m venv ./venv
-. ./venv/bin/activate
+python3 -m venv .venv
+. .venv/bin/activate
 pip install -r requirements.txt
 python3 -m FileStream
 ```
@@ -109,16 +135,30 @@ An example of `.env` file:
 API_ID = 789456
 API_HASH = ysx275f9638x896g43sfzx65
 BOT_TOKEN = 12345678:your_bot_token
+OWNER_ID = 987456321
 ULOG_CHANNEL = -100123456789
 FLOG_CHANNEL = -100123456789
 DATABASE_URL = mongodb://admin:pass@192.168.27.1
-FQDN = 192.168.27.1
+SESSION_NAME = FileStream
+FQDN = stream.example.com
 HAS_SSL = False
+NO_PORT = False
+PORT = 18180
+BIND_ADDRESS = 0.0.0.0
+AUTH_USERS = 987456321
+WORKERS = 6
+USER_SESSION_STRING = your_user_session_string
 MULTI_TOKEN1 = 12345678:bot_token_multi_client_1
 MULTI_TOKEN2 = 12345678:bot_token_multi_client_2
-OWNER_ID = 987456321
-PORT = 8080
+ADMIN_USERNAME = admin
+ADMIN_PASSWORD = change_this_password
+WEB_SESSION_SECRET = change_this_secret
 ```
+
+Important:
+
+- The bot must be admin in `FLOG_CHANNEL` and `ULOG_CHANNEL`
+- Any extra `MULTI_TOKEN*` client or session must also be able to access `FLOG_CHANNEL`
 </details>
 
 
@@ -133,13 +173,14 @@ PORT = 8080
 * `BOT_TOKEN`: Telegram API token of your bot, can be obtained from [@BotFather](https://t.me/BotFather). `str`
 * `FLOG_CHANNEL`: ID of the channel where bot will store all Files from users `int`.
 * `ULOG_CHANNEL`: ID of the channel where bot will send logs of New Users`int`.
-* `BOT_WORKERS`: Number of updates bot should process from Telegram at once, by default to 10 updates. `int`
+* `WORKERS`: Number of maximum concurrent workers for handling incoming updates. Defaults to `6`. `int`
 * `DATABASE_URL`: MongoDB URI for saving User Data and Files List created by user. `str`
 * `FQDN`: A Fully Qualified Domain Name if present without http/s. Defaults to `BIND_ADDRESS`. `str`
 
 #### 🗼 MultiClient Vars :
 * `MULTI_TOKEN1`: Add your first bot token or session strings here. `str`
 * `MULTI_TOKEN2`: Add your second bot token or session strings here. `str`
+* `USER_SESSION_STRING`: Required for full chat-history scanning and tracked source sync. `str`
 
 #### 🪐 Optional Vars :
 
@@ -152,12 +193,19 @@ PORT = 8080
 * `FILE_PIC`: To set Image at `/files` command. Defaults to pre-set image. `str`
 * `START_PIC`: To set Image at `/start` command. Defaults to pre-set image. `str`
 * `VERIFY_PIC`: To set Image at Force Sub Verification. Defaults to pre-set image. `str`
-* `WORKERS`: Number of maximum concurrent workers for handling incoming updates. Defaults to `6`. `int`
 * `PORT`: The port that you want your webapp to be listened to. Defaults to `8080`. `int`
 * `BIND_ADDRESS`: Your server bind adress. Defauls to `0.0.0.0`. `int`
 * `MODE`: Should be set to `secondary` if you only want to use the server for serving files. `str`
 * `NO_PORT`: (True/False) Set PORT to 80 or 443 hide port display; ignore if on Heroku. Defaults to `False`.
-* `HAS_SSL`: (can be either `True` or `False`) If you want the generated links in https format. Defaults to `False`. 
+* `HAS_SSL`: (can be either `True` or `False`) If you want the generated links in https format. Defaults to `False`.
+* `ADMIN_USERNAME`: Legacy admin website username. `str`
+* `ADMIN_PASSWORD`: Legacy admin website password. `str`
+* `ADMIN_CREDENTIALS`: Comma-separated `username:password` pairs for web admin logins. `str`
+* `WEB_SESSION_SECRET`: Cookie signing secret for admin sessions. Defaults to `BOT_TOKEN`. `str`
+* `WEB_SESSION_TTL`: Admin session lifetime in seconds. Defaults to `2592000`. `int`
+* `BUNDLE_FALLBACK_CHAT`: Telegram destination for website bundle delivery fallback. `int`
+* `TMDB_API_KEY`: Optional TMDb API key for media metadata helpers. `str`
+* `TMDB_READ_ACCESS_TOKEN`: Optional TMDb read access token. `str`
 
 </details>
 
@@ -165,6 +213,8 @@ PORT = 8080
   <summary><b>How to Use :</b></summary>
 
 :warning: **Before using the  bot, don't forget to add the bot to the `LOG_CHANNEL` as an Admin**
+
+:warning: **If you use extra `MULTI_TOKEN*` clients or session strings, they must also be able to access the `LOG_CHANNEL`**
  
 #### ‍☠️ Bot Commands :
 
@@ -184,6 +234,13 @@ PORT = 8080
 
 *Bot also Supported with Channels. Just add bot Channel as Admin. If any new file comes in Channel it will edit it with **Get Download Link** Button.*
 
+#### 🌐 Web Admin :
+
+* Admin login is available at `/admin/login`
+* Admin dashboard is available at `/admin`
+* The dashboard can create `.m3u` playlist links and export direct links
+* See [ADMIN_WEBSITE_NOTES.md](./ADMIN_WEBSITE_NOTES.md) for details
+
 </details>
 
 ### ❤️ Thanks To :
@@ -195,6 +252,5 @@ PORT = 8080
 
 ---
 <h4 align='center'>© 2024 Aνιѕнкαя Pαтιℓ</h4>
-
 
 
